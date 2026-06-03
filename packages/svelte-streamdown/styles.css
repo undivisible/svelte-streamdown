@@ -1,0 +1,63 @@
+@keyframes sd-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.svelte-streamdown {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.svelte-streamdown :where(p, ul, ol, pre, blockquote, table) {
+  margin-block: 0.75em;
+}
+
+.svelte-streamdown :where(h1, h2, h3, h4, h5, h6) {
+  font-weight: 650;
+  line-height: 1.2;
+  margin-block: 1em 0.5em;
+}
+
+.svelte-streamdown :where(ul, ol) {
+  padding-inline-start: 1.5em;
+}
+
+.svelte-streamdown :where(code) {
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  padding: 0.125rem 0.25rem;
+}
+
+.svelte-streamdown :where(pre) {
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+.svelte-streamdown :where(pre code) {
+  padding: 0;
+}
+
+.svelte-streamdown :where(table) {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.svelte-streamdown :where(th, td) {
+  border: 1px solid currentColor;
+  padding: 0.375rem 0.5rem;
+}
+
+.svelte-streamdown [data-sd-animate] {
+  animation: sd-fade-in var(--sd-duration, 150ms) ease both;
+}
+
+.svelte-streamdown__caret {
+  display: inline-block;
+  margin-inline-start: 0.125rem;
+  opacity: 0.7;
+}

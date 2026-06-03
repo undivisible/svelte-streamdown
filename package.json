@@ -1,9 +1,13 @@
 {
   "name": "streamdown-monorepo",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
-    "build:packages": "pnpm build --filter streamdown --filter @streamdown/math --filter @streamdown/code --filter @streamdown/cjk --filter @streamdown/mermaid",
+    "build:packages": "turbo run build --filter svelte-streamdown --filter remend",
     "dev": "turbo run dev",
     "check": "ultracite check",
     "fix": "ultracite fix",
@@ -11,12 +15,16 @@
     "test:coverage": "turbo run test:coverage",
     "test:ui": "turbo run test:ui",
     "check-types": "turbo run check-types",
+    "typecheck": "turbo run check-types",
+    "lint": "bun run --cwd packages/svelte-streamdown lint && ultracite check",
+    "format": "bun run --cwd packages/svelte-streamdown format && ultracite fix",
+    "format:check": "bun run --cwd packages/svelte-streamdown format:check && ultracite check",
     "changeset": "changeset",
     "changeset:version": "changeset version",
-    "changeset:publish": "pnpm build && changeset publish",
+    "changeset:publish": "bun run build && changeset publish",
     "bench": "turbo run bench",
     "bench:ui": "turbo run bench:ui",
-    "bump-deps": "npx npm-check-updates -u --deep -x \"recharts\" && pnpm i"
+    "bump-deps": "bunx npm-check-updates -u --deep -x \"recharts\" && bun install"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
@@ -25,12 +33,10 @@
     "typescript": "5.9.3",
     "ultracite": "7.2.4"
   },
-  "pnpm": {
-    "overrides": {
-      "lodash-es": ">=4.17.23"
-    }
+  "overrides": {
+    "lodash-es": ">=4.17.23"
   },
-  "packageManager": "pnpm@10.30.3",
+  "packageManager": "bun@1.3.14",
   "engines": {
     "node": ">=18"
   }
