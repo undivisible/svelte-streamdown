@@ -1,28 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite/core", "ultracite/react", "ultracite/next"],
+  "extends": ["ultracite/core"],
   "files": {
-    "includes": [
-      "!**/components/ui",
-      "!**/components/ai-elements",
-      "!**/components/geistdocs",
-      "!**/lib/utils.ts",
-      "!**/hooks/use-mobile.ts",
-      "!**/__tests__/__fixtures__",
-      "!packages/svelte-streamdown",
-      "!apps/tsrouter-chat-test"
-    ]
-  },
-  "overrides": [
-    {
-      "includes": ["**/__tests__/**/*.test.tsx"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noChildrenProp": "off"
-          }
-        }
-      }
-    }
-  ]
+    "includes": ["!**/__tests__/__fixtures__", "!packages/svelte-streamdown"]
+  }
 }

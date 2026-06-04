@@ -1,9 +1,5 @@
 # Reporting Security Issues
 
-If you believe you have found a security vulnerability in the Streamdown, we encourage you to let us know right away.
+If you believe you have found a security vulnerability in Svelte Streamdown, please disclose it privately.
 
-We will investigate all legitimate reports and do our best to quickly fix the problem.
-
-Email `security@vercel.com` to disclose any security vulnerabilities.
-
-https://vercel.com/security
+Open a private advisory at https://github.com/undivisible/svelte-streamdown/security/advisories/new.

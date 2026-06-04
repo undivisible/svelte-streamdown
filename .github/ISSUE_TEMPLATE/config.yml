@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: Documentation
-    url: https://streamdown.ai
+    url: https://github.com/undivisible/svelte-streamdown#readme
     about: Check out the documentation for usage examples and API reference
   - name: GitHub Discussions
-    url: https://github.com/vercel/streamdown/discussions
+    url: https://github.com/undivisible/svelte-streamdown/discussions
     about: Ask questions and discuss ideas with the community
   - name: Security Vulnerability
-    url: https://github.com/vercel/streamdown/security/advisories/new
+    url: https://github.com/undivisible/svelte-streamdown/security/advisories/new
     about: Please report security vulnerabilities privately

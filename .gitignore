@@ -18,11 +18,7 @@ coverage
 # Turbo
 .turbo
 
-# Vercel
-.vercel
-
 # Build Outputs
-.next/
 .svelte-kit/
 out/
 build
@@ -38,15 +34,9 @@ yarn-error.log*
 .DS_Store
 *.pem
 
-# Prevent accidental npm lockfiles in pnpm monorepo
+# Prevent accidental non-Bun lockfiles
 package-lock.json
 **/package-lock.json
 
-# Fumadocs
-.source
-
 # Benchmarks
 results.txt
-
-# Next.js
-next-env.d.ts

@@ -15,14 +15,16 @@
     "dist",
     "README.md"
   ],
-  "homepage": "https://streamdown.ai/docs/termination",
+  "homepage": "https://github.com/undivisible/svelte-streamdown/tree/main/packages/remend",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vercel/streamdown.git",
+    "url": "git+https://github.com/undivisible/svelte-streamdown.git",
     "directory": "packages/remend"
   },
   "scripts": {
     "build": "tsup",
+    "check-types": "tsc --noEmit",
+    "typecheck": "bun run check-types",
     "test": "vitest run",
     "test:ui": "vitest --ui run",
     "test:coverage": "vitest --coverage run",

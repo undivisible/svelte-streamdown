@@ -1,30 +1,26 @@
 {
-  "name": "streamdown-monorepo",
+  "name": "svelte-streamdown-monorepo",
   "private": true,
+  "description": "Svelte streaming markdown renderer with incomplete markdown repair.",
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "packages/remend",
+    "packages/svelte-streamdown"
   ],
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --filter remend --filter svelte-streamdown",
     "build:packages": "turbo run build --filter svelte-streamdown --filter remend",
-    "dev": "turbo run dev",
     "check": "ultracite check",
     "fix": "ultracite fix",
-    "test": "turbo run test",
-    "test:coverage": "turbo run test:coverage",
-    "test:ui": "turbo run test:ui",
-    "check-types": "turbo run check-types",
-    "typecheck": "turbo run check-types",
+    "test": "turbo run test --filter remend --filter svelte-streamdown",
+    "check-types": "turbo run check-types --filter remend --filter svelte-streamdown",
+    "typecheck": "bun run check-types",
     "lint": "bun run --cwd packages/svelte-streamdown lint && ultracite check",
     "format": "bun run --cwd packages/svelte-streamdown format && ultracite fix",
     "format:check": "bun run --cwd packages/svelte-streamdown format:check && ultracite check",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "bun run build && changeset publish",
-    "bench": "turbo run bench",
-    "bench:ui": "turbo run bench:ui",
-    "bump-deps": "bunx npm-check-updates -u --deep -x \"recharts\" && bun install"
+    "bench": "turbo run bench --filter remend"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",

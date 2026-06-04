@@ -9,6 +9,9 @@ import {
   whitespaceOrMarkersPattern,
 } from "./patterns";
 
+const hasOddDoubleTildePairs = (text: string): boolean =>
+  (text.match(doubleTildeGlobalPattern)?.length ?? 0) % 2 === 1;
+
 // Completes incomplete strikethrough formatting (~~)
 export const handleIncompleteStrikethrough = (text: string): string => {
   const strikethroughMatch = text.match(strikethroughPattern);
@@ -35,8 +38,7 @@ export const handleIncompleteStrikethrough = (text: string): string => {
     }
 
     // doubleTildeGlobalPattern always matches when strikethroughPattern matched
-    const tildePairs = text.match(doubleTildeGlobalPattern)?.length;
-    if (tildePairs % 2 === 1) {
+    if (hasOddDoubleTildePairs(text)) {
       return `${text}~~`;
     }
   } else {
@@ -53,8 +55,7 @@ export const handleIncompleteStrikethrough = (text: string): string => {
         return text;
       }
       // doubleTildeGlobalPattern always matches when halfCompleteTildePattern matched
-      const tildePairs = text.match(doubleTildeGlobalPattern)?.length;
-      if (tildePairs % 2 === 1) {
+      if (hasOddDoubleTildePairs(text)) {
         return `${text}~`;
       }
     }

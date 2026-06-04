@@ -1,5 +1,5 @@
 name: Feature Request
-description: Suggest a new feature or enhancement for Streamdown
+description: Suggest a new feature or enhancement for Svelte Streamdown
 title: "I have an idea for a feature..."
 labels: ["enhancement", "needs-triage"]
 body:
@@ -22,7 +22,7 @@ body:
     attributes:
       label: Proposed Solution
       description: Describe the solution you'd like
-      placeholder: I would like Streamdown to...
+      placeholder: I would like Svelte Streamdown to...
     validations:
       required: true
 
@@ -38,11 +38,13 @@ body:
     attributes:
       label: Use Case
       description: Provide a code example or use case showing how this feature would be used
-      render: tsx
+      render: svelte
       placeholder: |
-        import { Streamdown } from 'streamdown';
-        
-        // Example of how the feature would work...
+        <script lang="ts">
+          import { Streamdown } from 'svelte-streamdown';
+        </script>
+
+        <!-- Example of how the feature would work -->
 
   - type: dropdown
     id: priority

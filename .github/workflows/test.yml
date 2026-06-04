@@ -4,9 +4,12 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   test:
@@ -17,25 +20,23 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install Dependencies
-        run: pnpm i
+        run: bun install --frozen-lockfile
 
-      - name: Build Packages
-        run: pnpm build:packages
+      - name: Check Formatting
+        run: bun run format:check
 
-      - name: Build Website
-        run: pnpm build --filter website
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Lint
+        run: bun run lint
 
       - name: Run Tests
-        run: pnpm test
+        run: bun run test
 
-      - name: Check Linting and Formatting
-        run: pnpm check
+      - name: Build
+        run: bun run build

@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug or unexpected behavior in Streamdown
+description: Report a bug or unexpected behavior in Svelte Streamdown
 title: "I want to report a bug..."
 labels: ["bug", "needs-triage"]
 body:
@@ -53,27 +53,31 @@ body:
     attributes:
       label: Code Sample
       description: If applicable, add a minimal code sample to help reproduce the issue
-      render: tsx
+      render: svelte
       placeholder: |
-        import { Streamdown } from 'streamdown';
-        
-        // Your code here...
+        <script lang="ts">
+          import { Streamdown } from 'svelte-streamdown';
+
+          let markdown = $state('**Streaming** markdown');
+        </script>
+
+        <Streamdown {markdown} animated />
 
   - type: input
     id: version
     attributes:
-      label: Streamdown Version
-      description: What version of Streamdown are you using?
-      placeholder: e.g., 1.1.1
+      label: Svelte Streamdown Version
+      description: What version of Svelte Streamdown are you using?
+      placeholder: e.g., 0.1.0
     validations:
       required: true
 
   - type: input
-    id: react-version
+    id: svelte-version
     attributes:
-      label: React Version
-      description: What version of React are you using?
-      placeholder: e.g., 18.2.0 or 19.0.0
+      label: Svelte Version
+      description: What version of Svelte are you using?
+      placeholder: e.g., 5.51.0
     validations:
       required: true
 

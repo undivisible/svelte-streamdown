@@ -1,6 +1,6 @@
 # Svelte Streamdown
 
-A Svelte markdown renderer designed for AI-powered streaming.
+A Svelte 5 markdown renderer designed for AI-powered streaming.
 
 ## Installation
 
@@ -20,3 +20,10 @@ bun add svelte-streamdown
 
 <Streamdown {markdown} animated />
 ```
+
+## API
+
+- `markdown` - markdown content to render.
+- `animated` - animates newly streamed blocks when enabled.
+
+Import `svelte-streamdown/styles.css` for the default rendered markdown styles.
