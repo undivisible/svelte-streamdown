@@ -1,0 +1,104 @@
+---
+import Layout from "../layouts/Layout.astro";
+import LiveDemo from "../components/LiveDemo.svelte";
+---
+
+<Layout title="Svelte Streamdown">
+  <main>
+    <header>
+      <a href="https://github.com/undivisible/svelte-streamdown" target="_blank" rel="noopener">
+        GitHub ↗
+      </a>
+    </header>
+
+    <h1>
+      Svelte Streamdown
+      <span class="sub">A Svelte port of <a href="https://github.com/vercel/streamdown" target="_blank" rel="noopener">Vercel's Streamdown</a></span>
+    </h1>
+
+    <LiveDemo client:load />
+
+    <footer>
+      <p>Apache-2.0 upstream · MPL-2.0 for new code · <a href="https://github.com/undivisible/svelte-streamdown/tree/main/packages/remend">remend</a> retained from upstream</p>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 1rem 1.5rem;
+    z-index: 10;
+  }
+
+  header a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    transition: color 0.15s;
+  }
+
+  header a:hover {
+    color: var(--text);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+
+  .sub {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    margin-top: 0.375rem;
+  }
+
+  .sub a {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .sub a:hover {
+    color: var(--text);
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    text-align: center;
+  }
+
+  footer p {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+  }
+
+  footer a {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  footer a:hover {
+    color: var(--text);
+  }
+</style>

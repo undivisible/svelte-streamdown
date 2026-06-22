@@ -4,7 +4,8 @@
   "description": "Svelte streaming markdown renderer with incomplete markdown repair.",
   "workspaces": [
     "packages/remend",
-    "packages/svelte-streamdown"
+    "packages/svelte-streamdown",
+    "website"
   ],
   "scripts": {
     "build": "turbo run build --filter remend --filter svelte-streamdown",
@@ -20,7 +21,8 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "bun run build && changeset publish",
-    "bench": "turbo run bench --filter remend"
+    "bench": "turbo run bench --filter remend",
+    "dev:site": "bun run --cwd website dev"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
