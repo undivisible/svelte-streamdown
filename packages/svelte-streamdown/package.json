@@ -26,13 +26,10 @@
   "scripts": {
     "prebuild": "bun run --cwd ../remend build",
     "build": "svelte-package",
-    "precheck-types": "bun run --cwd ../remend build",
     "check-types": "svelte-check --tsconfig ./tsconfig.json",
-    "typecheck": "bun run check-types",
     "lint": "bun run check-types",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "pretest": "bun run --cwd ../remend build",
     "test": "vitest run"
   },
   "author": "Max Carter",
