@@ -2,9 +2,11 @@ import type { Element, Nodes, Parents, Root } from "hast";
 import { toHtml } from "hast-util-to-html";
 import { urlAttributes } from "html-url-attributes";
 import { harden } from "rehype-harden";
+import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
 import type { Options as RemarkRehypeOptions } from "remark-rehype";
 import remarkRehype from "remark-rehype";
@@ -65,7 +67,19 @@ const defaultSanitizeSchema = {
   attributes: {
     ...defaultSchema.attributes,
     code: [...(defaultSchema.attributes?.code ?? []), "metastring"],
+    // Allow KaTeX attributes
+    "*": [...(defaultSchema.attributes?.["*"] ?? []), "className"],
   },
+  tagNames: [
+    ...(defaultSchema.tagNames ?? []),
+    // KaTeX elements
+    "math", "semantics", "mrow", "mi", "mo", "mn", "msup", "msub",
+    "mfrac", "msqrt", "mroot", "mtext", "mpadded", "menclose",
+    "mtable", "mtr", "mtd", "mlabeledtr", "munder", "mover",
+    "munderover", "mspace", "none", "mglyph",
+    // KaTeX spans
+    "span",
+  ],
 };
 
 export const defaultUrlTransform: UrlTransform = (value) => value;
@@ -194,10 +208,11 @@ const createProcessor = (options: StreamdownOptions) => {
 
   return unified()
     .use(remarkParse)
-    .use([remarkGfm, ...remarkPlugins])
+    .use([remarkGfm, remarkMath, ...remarkPlugins])
     .use(remarkRehype, remarkRehypeOptions)
     .use(rehypeRaw)
     .use(rehypeSanitize, defaultSanitizeSchema)
+    .use(rehypeKatex)
     .use(harden, {
       allowedImagePrefixes: ["*"],
       allowedLinkPrefixes: ["*"],
