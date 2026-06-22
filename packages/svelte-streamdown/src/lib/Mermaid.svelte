@@ -9,27 +9,26 @@
 
   const chart = $derived((node.properties?.dataCode as string) ?? "");
   let container: HTMLDivElement;
+  let svgContent = $state("");
+  let lastValidSvg = $state("");
   let error = $state(false);
-  let rendered = $state(false);
   let lastChart = "";
-
-  // Debounce: only render after chart stops changing for 300ms
   let timer: ReturnType<typeof setTimeout> | null = null;
+
+  // Always render the last valid SVG (prevents jumpy disappear/reappear)
+  const displaySvg = $derived(svgContent || lastValidSvg);
 
   $effect(() => {
     const current = chart;
     if (!current || !container) return;
     if (current === lastChart) return;
 
-    // Reset on new content
-    error = false;
-    rendered = false;
-
-    // Debounce during streaming
+    // Debounce: wait for streaming to pause
     if (timer) clearTimeout(timer);
     timer = setTimeout(async () => {
-      if (current !== chart) return; // stale
+      if (current !== chart) return; // stale check
       lastChart = current;
+
       try {
         const mod: any = await import("mermaid");
         const mermaid = mod.default ?? mod;
@@ -41,14 +40,16 @@
 
         const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
         const { svg } = await mermaid.render(id, current);
-        if (container) {
-          container.innerHTML = svg;
-          rendered = true;
-        }
+        svgContent = svg;
+        lastValidSvg = svg;
+        error = false;
       } catch {
-        error = true;
+        // Silent fail — keep lastValidSvg visible
+        if (!lastValidSvg) {
+          error = true;
+        }
       }
-    }, 300);
+    }, 400);
 
     return () => {
       if (timer) clearTimeout(timer);
@@ -58,9 +59,12 @@
 
 <div class="sd-mermaid">
   <div bind:this={container}></div>
-  {#if error}
+  {#if displaySvg}
+    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+    <div class="sd-mermaid-svg">{@html displaySvg}</div>
+  {:else if error}
     <pre class="sd-mermaid-error">{chart}</pre>
-  {:else if !rendered}
+  {:else}
     <pre class="sd-mermaid-loading">{chart}</pre>
   {/if}
 </div>
