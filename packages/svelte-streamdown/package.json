@@ -30,7 +30,8 @@
     "lint": "bun run check-types",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "bench": "vitest bench"
   },
   "author": "Max Carter",
   "license": "MPL-2.0",
