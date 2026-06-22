@@ -38,7 +38,6 @@
   "dependencies": {
     "hast-util-to-html": "^9.0.5",
     "html-url-attributes": "^3.0.1",
-    "katex": "^0.17.0",
     "marked": "^17.0.1",
     "rehype-harden": "^1.1.8",
     "rehype-katex": "^7.0.1",
