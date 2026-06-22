@@ -5,7 +5,7 @@ interface RehypeShikiOptions {
   themes?: [string, string];
 }
 
-// Ponytail: singleton highlighter. Created once, shared across all calls.
+// Singleton highlighter — created once, shared across all calls.
 let highlighterReady: Promise<any> | null = null;
 
 const ensureHighlighter = (): Promise<any> => {
@@ -36,7 +36,8 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       return;
     }
 
-    const codeNodes: Array<{ code: any; lang: string }> = [];
+    // Collect pre > code pairs
+    const codeNodes: Array<{ pre: any; code: any; lang: string }> = [];
     visit(tree, "element", (node: any) => {
       if (node.tagName !== "pre") return;
       const code = node.children?.find((c: any) => c.tagName === "code");
@@ -45,24 +46,22 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
         c.startsWith("language-"),
       );
       const lang = (langClass?.replace("language-", "") ?? "") as string;
-      codeNodes.push({ code, lang });
+      codeNodes.push({ pre: node, code, lang });
     });
 
-    const loaded = h.getLoadedLanguages();
-    const needed = [
-      ...new Set(
-        codeNodes
-          .map((n) => n.lang)
-          .filter((l) => l && l !== "text" && !loaded.includes(l)),
-      ),
-    ];
-    if (needed.length > 0) {
-      await Promise.all(
-        needed.map((l) => h!.loadLanguage(l as BundledLanguage)),
-      );
+    // Load languages on demand, skip invalid ones
+    for (const { lang } of codeNodes) {
+      if (!lang || lang === "text") continue;
+      const loaded = h.getLoadedLanguages();
+      if (loaded.includes(lang)) continue;
+      try {
+        await h.loadLanguage(lang as BundledLanguage);
+      } catch {
+        // Partial streaming token — skip
+      }
     }
 
-    for (const { code, lang } of codeNodes) {
+    for (const { pre, code, lang } of codeNodes) {
       const textNode = code.children?.find((c: any) => c.type === "text");
       if (!textNode) continue;
 
@@ -77,6 +76,14 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           themes: { light: themes[0], dark: themes[1] },
         });
 
+        // Set background color on <pre> so code blocks get shiki's bg
+        // even when the page has a dark background
+        if (result.bg) {
+          if (!pre.properties) pre.properties = {};
+          pre.properties.style = `background-color:${result.bg}`;
+        }
+
+        // Highlight tokens with dual-theme CSS vars
         code.children = result.tokens.map((line: any) => ({
           type: "element",
           tagName: "span",

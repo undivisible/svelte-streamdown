@@ -40,6 +40,17 @@
 
 .svelte-streamdown :where(pre code) {
   padding: 0;
+  display: block;
+  white-space: pre;
+}
+
+.svelte-streamdown .shiki .line {
+  display: block;
+}
+
+/* shiki sets background-color on <pre> for light theme */
+.svelte-streamdown :where(pre.shiki, pre:has(code.shiki)) {
+  color: var(--shiki-dark, #24292e);
 }
 
 .svelte-streamdown :where(table) {

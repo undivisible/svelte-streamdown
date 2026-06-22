@@ -4,6 +4,23 @@
 
   let { node }: { node: Nodes | Root } = $props();
 
+  const VOID_ELEMENTS = new Set([
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
+  ]);
+
   const normalizePropertyName = (name: string): string => {
     if (name === "className") {
       return "class";
@@ -49,9 +66,13 @@
 {:else if node.type === "text"}
   {node.value}
 {:else if node.type === "element"}
-  <svelte:element this={node.tagName} {...attributesFor(node)}>
-    {#each node.children as child, index (`${node.tagName}-${index}`)}
-      <HastNode node={child} />
-    {/each}
-  </svelte:element>
+  {#if VOID_ELEMENTS.has(node.tagName)}
+    <svelte:element this={node.tagName} {...attributesFor(node)} />
+  {:else}
+    <svelte:element this={node.tagName} {...attributesFor(node)}>
+      {#each node.children as child, index (`${node.tagName}-${index}`)}
+        <HastNode node={child} />
+      {/each}
+    </svelte:element>
+  {/if}
 {/if}
