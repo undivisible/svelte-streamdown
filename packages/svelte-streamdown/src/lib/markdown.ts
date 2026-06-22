@@ -76,10 +76,30 @@ const defaultSanitizeSchema = {
   tagNames: [
     ...(defaultSchema.tagNames ?? []),
     // KaTeX elements
-    "math", "semantics", "mrow", "mi", "mo", "mn", "msup", "msub",
-    "mfrac", "msqrt", "mroot", "mtext", "mpadded", "menclose",
-    "mtable", "mtr", "mtd", "mlabeledtr", "munder", "mover",
-    "munderover", "mspace", "none", "mglyph",
+    "math",
+    "semantics",
+    "mrow",
+    "mi",
+    "mo",
+    "mn",
+    "msup",
+    "msub",
+    "mfrac",
+    "msqrt",
+    "mroot",
+    "mtext",
+    "mpadded",
+    "menclose",
+    "mtable",
+    "mtr",
+    "mtd",
+    "mlabeledtr",
+    "munder",
+    "mover",
+    "munderover",
+    "mspace",
+    "none",
+    "mglyph",
     // KaTeX spans
     "span",
   ],
@@ -211,7 +231,13 @@ const createProcessor = (options: StreamdownOptions) => {
 
   return unified()
     .use(remarkParse)
-    .use([remarkGfm, remarkCjkFriendly, remarkCjkFriendlyGfmStrikethrough, remarkMath, ...remarkPlugins])
+    .use([
+      remarkGfm,
+      remarkCjkFriendly,
+      remarkCjkFriendlyGfmStrikethrough,
+      remarkMath,
+      ...remarkPlugins,
+    ])
     .use(remarkRehype, remarkRehypeOptions)
     .use(rehypeRaw)
     .use(rehypeSanitize, defaultSanitizeSchema)
@@ -227,43 +253,47 @@ const createProcessor = (options: StreamdownOptions) => {
     .use(rehypePlugins);
 };
 
-export const renderMarkdownToHtml = (
+export const renderMarkdownToHtml = async (
   markdown: string,
   options: StreamdownOptions = {},
-): string => {
-  return toHtml(renderMarkdownToRoot(markdown, options));
+): Promise<string> => {
+  return toHtml(await renderMarkdownToRoot(markdown, options));
 };
 
-export const renderMarkdownToRoot = (
+export const renderMarkdownToRoot = async (
   markdown: string,
   options: StreamdownOptions = {},
-): Root => {
+): Promise<Root> => {
   const processor = createProcessor(options);
   const normalized = options.normalizeHtmlIndentation
     ? normalizeHtmlIndentation(markdown)
     : markdown;
-  const tree = processor.runSync(processor.parse(normalized), normalized);
+  const tree = await processor.run(processor.parse(normalized), normalized);
   return postProcessTree(tree as Nodes, options);
 };
 
-export const renderStreamdownBlocks = (
+export const renderStreamdownBlocks = async (
   markdown: string,
   options: StreamdownOptions = {},
-): RenderedBlock[] => {
+): Promise<RenderedBlock[]> => {
   const shouldRepair =
     options.mode !== "static" && options.parseIncompleteMarkdown !== false;
   const repaired = shouldRepair ? remend(markdown, options.remend) : markdown;
   const blocks =
     options.mode === "static" ? [repaired] : parseMarkdownIntoBlocks(repaired);
 
-  return blocks.map((block, index) => {
-    const tree = renderMarkdownToRoot(block, options);
-    return {
-      key: `${index}:${block.length}:${block.slice(0, 16)}`,
-      markdown: block,
-      html: toHtml(tree),
-      tree,
-      dir: options.dir === "rtl" ? "rtl" : "ltr",
-    };
-  });
+  const rendered = await Promise.all(
+    blocks.map(async (block, index) => {
+      const tree = await renderMarkdownToRoot(block, options);
+      return {
+        key: `${index}:${block.length}:${block.slice(0, 16)}`,
+        markdown: block,
+        html: toHtml(tree),
+        tree,
+        dir: (options.dir === "rtl" ? "rtl" : "ltr") as "ltr" | "rtl",
+      };
+    }),
+  );
+
+  return rendered;
 };

@@ -250,7 +250,10 @@ export const countTripleAsterisks = (text: string): number => {
 };
 
 // Counts character pairs (e.g. ** or __) outside fenced code blocks
-const countCharPairsOutsideCodeBlocks = (text: string, char: string): number => {
+const countCharPairsOutsideCodeBlocks = (
+  text: string,
+  char: string
+): number => {
   let count = 0;
   let inCodeBlock = false;
 

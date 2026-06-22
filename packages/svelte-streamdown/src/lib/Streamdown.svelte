@@ -1,7 +1,8 @@
 <script lang="ts">
   import {
     renderStreamdownBlocks,
-    type StreamdownOptions
+    type StreamdownOptions,
+    type RenderedBlock
   } from "./markdown";
   import HastNode from "./HastNode.svelte";
 
@@ -48,7 +49,15 @@
     remend
   });
 
-  let blocks = $derived(renderStreamdownBlocks(markdown, options));
+  let blocks: RenderedBlock[] = $state([]);
+
+  $effect(() => {
+    const currentMarkdown = markdown;
+    const currentOptions = options;
+    renderStreamdownBlocks(currentMarkdown, currentOptions).then((result) => {
+      blocks = result;
+    });
+  });
 </script>
 
 <div class={`svelte-streamdown ${className}`} data-streamdown-root>

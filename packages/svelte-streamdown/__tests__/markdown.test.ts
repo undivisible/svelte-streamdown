@@ -7,8 +7,8 @@ import {
 import { parseMarkdownIntoBlocks } from "../src/lib/parse-blocks";
 
 describe("renderMarkdownToHtml", () => {
-  it("renders markdown to sanitized html", () => {
-    const html = renderMarkdownToHtml(
+  it("renders markdown to sanitized html", async () => {
+    const html = await renderMarkdownToHtml(
       "# Hello\n\n<script>alert('x')</script>\n\n[tel](tel:+15555555555)",
     );
 
@@ -17,15 +17,15 @@ describe("renderMarkdownToHtml", () => {
     expect(html).toContain('href="tel:+15555555555"');
   });
 
-  it("supports gfm tables", () => {
-    const html = renderMarkdownToHtml("| A | B |\n| - | - |\n| 1 | 2 |");
+  it("supports gfm tables", async () => {
+    const html = await renderMarkdownToHtml("| A | B |\n| - | - |\n| 1 | 2 |");
 
     expect(html).toContain("<table>");
     expect(html).toContain("<td>1</td>");
   });
 
-  it("filters elements", () => {
-    const html = renderMarkdownToHtml("# Hello\n\nWorld", {
+  it("filters elements", async () => {
+    const html = await renderMarkdownToHtml("# Hello\n\nWorld", {
       allowedElements: ["p"],
       unwrapDisallowed: true,
     });
@@ -37,14 +37,16 @@ describe("renderMarkdownToHtml", () => {
 });
 
 describe("renderStreamdownBlocks", () => {
-  it("repairs incomplete streaming markdown", () => {
-    const blocks = renderStreamdownBlocks("**Hello");
+  it("repairs incomplete streaming markdown", async () => {
+    const blocks = await renderStreamdownBlocks("**Hello");
 
     expect(blocks[0].html).toContain("<strong>Hello</strong>");
   });
 
-  it("keeps static output as one block", () => {
-    const blocks = renderStreamdownBlocks("# One\n\n# Two", { mode: "static" });
+  it("keeps static output as one block", async () => {
+    const blocks = await renderStreamdownBlocks("# One\n\n# Two", {
+      mode: "static",
+    });
 
     expect(blocks).toHaveLength(1);
     expect(blocks[0].html).toContain("<h1>One</h1>");
