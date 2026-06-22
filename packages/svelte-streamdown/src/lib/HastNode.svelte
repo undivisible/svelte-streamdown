@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Element, Nodes, Root } from "hast";
   import HastNode from "./HastNode.svelte";
+  import CodeBlock from "./CodeBlock.svelte";
+  import Mermaid from "./Mermaid.svelte";
 
   let { node }: { node: Nodes | Root } = $props();
 
@@ -47,9 +49,18 @@
     return undefined;
   };
 
+  const hasClassName = (el: Element, cls: string): boolean => {
+    const cn = el.properties?.className;
+    if (Array.isArray(cn)) return cn.includes(cls);
+    if (typeof cn === "string") return cn.split(" ").includes(cls);
+    return false;
+  };
+
   const attributesFor = (element: Element) => {
     const attributes: Record<string, string | number | boolean> = {};
     for (const [name, value] of Object.entries(element.properties ?? {})) {
+      // Skip internal data-* attrs used by CodeBlock wrapper
+      if (name === "dataLang" || name === "dataCode") continue;
       const normalized = normalizePropertyValue(value);
       if (normalized !== undefined) {
         attributes[normalizePropertyName(name)] = normalized;
@@ -66,7 +77,15 @@
 {:else if node.type === "text"}
   {node.value}
 {:else if node.type === "element"}
-  {#if VOID_ELEMENTS.has(node.tagName)}
+  {#if node.tagName === "div" && hasClassName(node, "sd-mermaid-block")}
+    <Mermaid {node} />
+  {:else if node.tagName === "div" && hasClassName(node, "sd-code-block")}
+    <CodeBlock {node}>
+      {#each node.children as child, index (`code-${index}`)}
+        <HastNode node={child} />
+      {/each}
+    </CodeBlock>
+  {:else if VOID_ELEMENTS.has(node.tagName)}
     <svelte:element this={node.tagName} {...attributesFor(node)} />
   {:else}
     <svelte:element this={node.tagName} {...attributesFor(node)}>

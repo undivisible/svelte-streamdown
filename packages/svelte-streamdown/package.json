@@ -67,6 +67,12 @@
     "vitest": "^4.0.18"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.0.0",
+    "mermaid": "^10.0.0 || ^11.0.0"
+  },
+  "peerDependenciesMeta": {
+    "mermaid": {
+      "optional": true
+    }
   }
 }

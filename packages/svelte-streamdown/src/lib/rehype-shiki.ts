@@ -66,6 +66,29 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
         c.startsWith("language-"),
       );
       const lang = (langClass?.replace("language-", "") ?? "") as string;
+
+      // Mermaid: skip shiki, wrap for Mermaid.svelte component
+      if (lang === "mermaid") {
+        const textNode = code.children?.find((c: any) => c.type === "text");
+        if (!textNode) return;
+        const parent = tree.children?.find((n: any) =>
+          n.children?.includes(node),
+        );
+        if (parent) {
+          const idx = parent.children.indexOf(node);
+          parent.children[idx] = {
+            type: "element",
+            tagName: "div",
+            properties: {
+              className: ["sd-mermaid-block"],
+              dataCode: textNode.value as string,
+            },
+            children: [],
+          };
+        }
+        return;
+      }
+
       codeNodes.push({ pre: node, code, lang });
     });
 
@@ -96,11 +119,9 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
         });
 
         // Set CSS custom properties on <pre> for theme switching.
-        // Users override via .svelte-streamdown pre or @media queries.
         const preStyleParts: string[] = [];
         if (result.bg) preStyleParts.push(`--shiki-light-bg:${result.bg}`);
         if (result.fg) preStyleParts.push(`--shiki-light-fg:${result.fg}`);
-        // result.rootStyle contains --shiki-dark-bg from the dark theme
         if (result.rootStyle) {
           for (const decl of result.rootStyle.split(";")) {
             const idx = decl.indexOf(":");
@@ -138,6 +159,26 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           "shiki",
           `shiki-themes-${themes[0]}-${themes[1]}`,
         ];
+
+        // Wrap <pre> in a container div for language label + copy button
+        // ponytail: find parent that holds this <pre> and replace with wrapper
+        const parent = tree.children?.find((n: any) =>
+          n.children?.includes(pre),
+        );
+        if (parent) {
+          const idx = parent.children.indexOf(pre);
+          const rawText = textNode.value as string;
+          parent.children[idx] = {
+            type: "element",
+            tagName: "div",
+            properties: {
+              className: ["sd-code-block"],
+              dataLang: lang || undefined,
+              dataCode: rawText,
+            },
+            children: [pre],
+          };
+        }
       } catch {
         // Leave as plain text on error
       }
