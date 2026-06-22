@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import LiveDemo from "../components/LiveDemo.svelte";
+import Comparison from "../components/Comparison.astro";
 ---
 
 <Layout title="Svelte Streamdown">
@@ -17,6 +18,8 @@ import LiveDemo from "../components/LiveDemo.svelte";
     </h1>
 
     <LiveDemo client:load />
+
+    <Comparison />
 
     <footer>
       <p>Apache-2.0 upstream · MPL-2.0 for new code · <a href="https://github.com/undivisible/svelte-streamdown/tree/main/packages/remend">remend</a> retained from upstream</p>
