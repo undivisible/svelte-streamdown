@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { Streamdown } from "svelte-streamdown";
   import "svelte-streamdown/styles.css";
 
@@ -100,6 +101,10 @@ Math: $E = mc^2$
 
 Edit this text to try it yourself.`;
   }
+
+  onMount(() => {
+    startStream();
+  });
 </script>
 
 <div class="controls">
@@ -161,7 +166,8 @@ Edit this text to try it yourself.`;
   .panes {
     display: grid;
     grid-template-columns: 1fr 1px 1fr;
-    height: 480px;
+    height: 70vh;
+    min-height: 400px;
     border: 1px solid var(--border);
     border-radius: 6px;
     overflow: hidden;
@@ -171,6 +177,7 @@ Edit this text to try it yourself.`;
     display: flex;
     flex-direction: column;
     min-width: 0;
+    overflow: hidden;
   }
 
   .label {
