@@ -5,19 +5,19 @@ interface RehypeShikiOptions {
   themes?: [string, string];
 }
 
-let highlighterPromise: ReturnType<
-  typeof import("shiki").createHighlighter
-> | null = null;
+// Ponytail: singleton highlighter. Created once, shared across all calls.
+let highlighterReady: Promise<any> | null = null;
 
-const getHighlighter = async () => {
-  if (!highlighterPromise) {
-    const shiki = await import("shiki");
-    highlighterPromise = shiki.createHighlighter({
-      themes: ["github-light", "github-dark"],
-      langs: [],
-    });
+const ensureHighlighter = (): Promise<any> => {
+  if (!highlighterReady) {
+    highlighterReady = import("shiki").then((shiki) =>
+      shiki.createHighlighter({
+        themes: ["github-light", "github-dark"],
+        langs: [],
+      }),
+    );
   }
-  return highlighterPromise;
+  return highlighterReady;
 };
 
 const htmlStyleToCSS = (htmlStyle: Record<string, string>): string =>
@@ -31,7 +31,7 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
   return async (tree: any) => {
     let h;
     try {
-      h = await getHighlighter();
+      h = await ensureHighlighter();
     } catch {
       return;
     }
@@ -77,7 +77,6 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           themes: { light: themes[0], dark: themes[1] },
         });
 
-        // shiki v4: token.htmlStyle contains color + --shiki-dark CSS vars
         code.children = result.tokens.map((line: any) => ({
           type: "element",
           tagName: "span",
