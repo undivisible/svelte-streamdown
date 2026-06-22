@@ -27,17 +27,17 @@ Requires Svelte 5.
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `markdown` | `string` | `""` | Markdown content to render |
-| `mode` | `"streaming" \| "static"` | `"streaming"` | Streaming mode repairs incomplete syntax; static renders as-is |
-| `dir` | `"auto" \| "ltr" \| "rtl"` | `"auto"` | Text direction. `auto` detects per-block |
-| `animated` | `boolean \| string` | `false` | Animation: `true` (fade), `"blur"`, `"slide-up"`, `"slide-down"` |
-| `caret` | `boolean \| string` | `false` | Caret at end (`"block"`, `"circle"`, or custom char) |
-| `parseIncompleteMarkdown` | `boolean` | `true` | Enable incomplete markdown repair |
-| `normalizeHtmlIndentation` | `boolean` | `false` | Remove extra indentation from HTML blocks |
-| `rehypePlugins` | `PluggableList` | `[]` | Additional rehype plugins |
-| `remarkPlugins` | `PluggableList` | `[]` | Additional remark plugins |
+| Prop                       | Type                       | Default       | Description                                                      |
+| -------------------------- | -------------------------- | ------------- | ---------------------------------------------------------------- |
+| `markdown`                 | `string`                   | `""`          | Markdown content to render                                       |
+| `mode`                     | `"streaming" \| "static"`  | `"streaming"` | Streaming mode repairs incomplete syntax; static renders as-is   |
+| `dir`                      | `"auto" \| "ltr" \| "rtl"` | `"auto"`      | Text direction. `auto` detects per-block                         |
+| `animated`                 | `boolean \| string`        | `false`       | Animation: `true` (fade), `"blur"`, `"slide-up"`, `"slide-down"` |
+| `caret`                    | `boolean \| string`        | `false`       | Caret at end (`"block"`, `"circle"`, or custom char)             |
+| `parseIncompleteMarkdown`  | `boolean`                  | `true`        | Enable incomplete markdown repair                                |
+| `normalizeHtmlIndentation` | `boolean`                  | `false`       | Remove extra indentation from HTML blocks                        |
+| `rehypePlugins`            | `PluggableList`            | `[]`          | Additional rehype plugins                                        |
+| `remarkPlugins`            | `PluggableList`            | `[]`          | Additional remark plugins                                        |
 
 ## Features
 

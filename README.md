@@ -40,23 +40,24 @@ Requires Svelte 5.
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `markdown` | `string` | `""` | Markdown content to render |
-| `mode` | `"streaming" \| "static"` | `"streaming"` | Streaming mode repairs incomplete syntax; static renders as-is |
-| `dir` | `"auto" \| "ltr" \| "rtl"` | `"auto"` | Text direction. `auto` detects per-block |
-| `animated` | `boolean \| string` | `false` | Animation type: `true` (fade), `"blur"`, `"slide-up"`, `"slide-down"` |
-| `caret` | `boolean \| string` | `false` | Show a caret at the end (`"block"`, `"circle"`, or custom char) |
-| `parseIncompleteMarkdown` | `boolean` | `true` | Enable incomplete markdown repair (streaming mode) |
-| `normalizeHtmlIndentation` | `boolean` | `false` | Remove extra indentation from HTML blocks |
-| `rehypePlugins` | `PluggableList` | `[]` | Additional rehype plugins |
-| `remarkPlugins` | `PluggableList` | `[]` | Additional remark plugins |
+| Prop                       | Type                       | Default       | Description                                                           |
+| -------------------------- | -------------------------- | ------------- | --------------------------------------------------------------------- |
+| `markdown`                 | `string`                   | `""`          | Markdown content to render                                            |
+| `mode`                     | `"streaming" \| "static"`  | `"streaming"` | Streaming mode repairs incomplete syntax; static renders as-is        |
+| `dir`                      | `"auto" \| "ltr" \| "rtl"` | `"auto"`      | Text direction. `auto` detects per-block                              |
+| `animated`                 | `boolean \| string`        | `false`       | Animation type: `true` (fade), `"blur"`, `"slide-up"`, `"slide-down"` |
+| `caret`                    | `boolean \| string`        | `false`       | Show a caret at the end (`"block"`, `"circle"`, or custom char)       |
+| `parseIncompleteMarkdown`  | `boolean`                  | `true`        | Enable incomplete markdown repair (streaming mode)                    |
+| `normalizeHtmlIndentation` | `boolean`                  | `false`       | Remove extra indentation from HTML blocks                             |
+| `rehypePlugins`            | `PluggableList`            | `[]`          | Additional rehype plugins                                             |
+| `remarkPlugins`            | `PluggableList`            | `[]`          | Additional remark plugins                                             |
 
 ## Code Highlighting
 
 Code blocks are highlighted with [Shiki](https://shiki.style/) using dual-theme CSS variables. Both light and dark themes are baked into the HTML — your CSS switches between them.
 
 Code blocks include a **header bar** with:
+
 - Language label (e.g. "typescript")
 - Copy-to-clipboard button
 
@@ -66,11 +67,11 @@ Languages are loaded on demand — only the ones used in your content are fetche
 
 Shiki sets CSS custom properties on `<pre>` and token spans:
 
-| Property | Light | Dark |
-|----------|-------|------|
+| Property           | Light              | Dark              |
+| ------------------ | ------------------ | ----------------- |
 | `<pre>` background | `--shiki-light-bg` | `--shiki-dark-bg` |
 | `<pre>` foreground | `--shiki-light-fg` | `--shiki-dark-fg` |
-| Token color | `--shiki-light` | `--shiki-dark` |
+| Token color        | `--shiki-light`    | `--shiki-dark`    |
 
 Theme switching is automatic via `prefers-color-scheme` and `.dark` class:
 
@@ -188,10 +189,10 @@ Works with plain CSS, Tailwind, UnoCSS, or any other framework. Override by targ
 
 ## Packages
 
-| Package | Description |
-|---------|-------------|
-| `packages/svelte-streamdown` | Svelte component (npm: `svelte-streamdown`) |
-| `packages/remend` | Incomplete markdown repair (retained from upstream) |
+| Package                      | Description                                         |
+| ---------------------------- | --------------------------------------------------- |
+| `packages/svelte-streamdown` | Svelte component (npm: `svelte-streamdown`)         |
+| `packages/remend`            | Incomplete markdown repair (retained from upstream) |
 
 ## Development
 
@@ -210,36 +211,36 @@ This is a Svelte port of [Vercel Streamdown](https://github.com/vercel/streamdow
 
 ### vs Vercel Streamdown (React)
 
-| Feature | upstream (React) | this (Svelte) |
-|---------|-----------------|---------------|
-| Framework | React 18+ | Svelte 5 |
-| Lexing | Custom remark pipeline | Same unified/remark pipeline |
-| Code highlighting | Component-level plugin (`@streamdown/code`) | rehype plugin (inline in pipeline) |
-| Math | Opt-in (`@streamdown/math`) | Opt-in via remark-math + rehype-katex |
-| Mermaid | Opt-in (`@streamdown/mermaid`) | Opt-in (lazy-loaded) |
-| Animations | Blur, fade, slide | Fade, blur, slide |
-| Code block header | Copy, download, language | Copy, language |
-| Theme system | Tailwind + shadcn | Plain CSS (user stylesheets) |
-| Streaming repair | remend | remend (same library) |
+| Feature           | upstream (React)                            | this (Svelte)                         |
+| ----------------- | ------------------------------------------- | ------------------------------------- |
+| Framework         | React 18+                                   | Svelte 5                              |
+| Lexing            | Custom remark pipeline                      | Same unified/remark pipeline          |
+| Code highlighting | Component-level plugin (`@streamdown/code`) | rehype plugin (inline in pipeline)    |
+| Math              | Opt-in (`@streamdown/math`)                 | Opt-in via remark-math + rehype-katex |
+| Mermaid           | Opt-in (`@streamdown/mermaid`)              | Opt-in (lazy-loaded)                  |
+| Animations        | Blur, fade, slide                           | Fade, blur, slide                     |
+| Code block header | Copy, download, language                    | Copy, language                        |
+| Theme system      | Tailwind + shadcn                           | Plain CSS (user stylesheets)          |
+| Streaming repair  | remend                                      | remend (same library)                 |
 
 ### vs beynar/svelte-streamdown
 
-| Feature | beynar (Svelte) | this (Svelte) |
-|---------|----------------|---------------|
-| Lexing engine | `marked` (custom lexer) | `unified`/remark (standard pipeline) |
-| Code highlighting | Component-level (shiki/core) | rehype plugin (inline in pipeline) |
-| Theme system | Tailwind + shadcn + clsx | Plain CSS (framework-agnostic) |
-| Component model | Element + Svelte snippets | HastNode (recursive hast→Svelte) |
-| Mermaid | Opt-in component import | Opt-in (auto-detect ` ```mermaid `) |
-| Math | Opt-in component import | Opt-in via remark-math + rehype-katex |
-| Animations | Blur, fade, slide (configurable) | Fade, blur, slide (CSS data-attribute) |
-| Code block | Copy + download + language | Copy + language |
-| Security | None built-in | rehype-harden sanitization |
-| Streaming repair | remend | remend (same library) |
-| CSS approach | Tailwind utility classes | CSS custom properties + `prefers-color` |
-| Dual-theme | Inline `color` per token | CSS vars (`--shiki-light`/`--shiki-dark`) |
-| Package weight | Heavy (tailwind + mermaid + katex) | Lean (mermaid/katex optional) |
-| License | MIT | MPL-2.0 |
+| Feature           | beynar (Svelte)                    | this (Svelte)                             |
+| ----------------- | ---------------------------------- | ----------------------------------------- |
+| Lexing engine     | `marked` (custom lexer)            | `unified`/remark (standard pipeline)      |
+| Code highlighting | Component-level (shiki/core)       | rehype plugin (inline in pipeline)        |
+| Theme system      | Tailwind + shadcn + clsx           | Plain CSS (framework-agnostic)            |
+| Component model   | Element + Svelte snippets          | HastNode (recursive hast→Svelte)          |
+| Mermaid           | Opt-in component import            | Opt-in (auto-detect ` ```mermaid `)       |
+| Math              | Opt-in component import            | Opt-in via remark-math + rehype-katex     |
+| Animations        | Blur, fade, slide (configurable)   | Fade, blur, slide (CSS data-attribute)    |
+| Code block        | Copy + download + language         | Copy + language                           |
+| Security          | None built-in                      | rehype-harden sanitization                |
+| Streaming repair  | remend                             | remend (same library)                     |
+| CSS approach      | Tailwind utility classes           | CSS custom properties + `prefers-color`   |
+| Dual-theme        | Inline `color` per token           | CSS vars (`--shiki-light`/`--shiki-dark`) |
+| Package weight    | Heavy (tailwind + mermaid + katex) | Lean (mermaid/katex optional)             |
+| License           | MIT                                | MPL-2.0                                   |
 
 ## License
 
