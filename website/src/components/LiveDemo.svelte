@@ -2,6 +2,9 @@
   import { onMount } from "svelte";
   import { Streamdown } from "svelte-streamdown";
   import "svelte-streamdown/styles.css";
+  import remarkMath from "remark-math";
+  import rehypeKatex from "rehype-katex";
+  import "katex/dist/katex.min.css";
 
   const fullText = `# Hello World
 
@@ -33,7 +36,7 @@ Streamdown processes markdown as it arrives, token by token. The \`remend\` libr
   let markdown = $state("");
 <\/script>
 
-<Streamdown {markdown} />
+<Streamdown {markdown} remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]} />
 \`\`\`
 
 ### Rendering pipeline
@@ -121,7 +124,7 @@ graph TD
   <div class="pane">
     <div class="label">output</div>
     <div class="output">
-      <Streamdown {markdown} animated />
+      <Streamdown {markdown} animated remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]} />
     </div>
   </div>
 </div>

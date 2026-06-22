@@ -13,15 +13,23 @@
   let rendered = $state(false);
   let lastChart = "";
 
+  // Debounce: only render after chart stops changing for 300ms
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
   $effect(() => {
     const current = chart;
     if (!current || !container) return;
     if (current === lastChart) return;
-    lastChart = current;
+
+    // Reset on new content
     error = false;
     rendered = false;
 
-    (async () => {
+    // Debounce during streaming
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(async () => {
+      if (current !== chart) return; // stale
+      lastChart = current;
       try {
         const mod: any = await import("mermaid");
         const mermaid = mod.default ?? mod;
@@ -33,17 +41,22 @@
 
         const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
         const { svg } = await mermaid.render(id, current);
-        container.innerHTML = svg;
-        rendered = true;
+        if (container) {
+          container.innerHTML = svg;
+          rendered = true;
+        }
       } catch {
         error = true;
       }
-    })();
+    }, 300);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   });
 </script>
 
 <div class="sd-mermaid">
-  <!-- Container is ALWAYS rendered so bind:this works -->
   <div bind:this={container}></div>
   {#if error}
     <pre class="sd-mermaid-error">{chart}</pre>
