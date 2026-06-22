@@ -3,7 +3,12 @@
   import { Streamdown } from "svelte-streamdown";
   import "svelte-streamdown/styles.css";
 
-  let markdown = $state(`# Hello World
+  let markdown = $state("");
+
+  let isStreaming = $state(false);
+  let streamInterval: ReturnType<typeof setInterval> | null = null;
+
+  const sampleText = `# Hello World
 
 This is **Streamdown** — a Svelte port of Vercel's streaming markdown renderer.
 
@@ -21,12 +26,7 @@ Math: $E = mc^2$
 
 ---
 
-Edit this text to try it yourself.`);
-
-  let isStreaming = $state(false);
-  let streamInterval: ReturnType<typeof setInterval> | null = null;
-
-  const sampleText = `## How it works
+## How it works
 
 Streamdown processes markdown as it arrives, token by token. The \`remend\` library repairs incomplete syntax before rendering.
 
@@ -81,25 +81,7 @@ Streamdown processes markdown as it arrives, token by token. The \`remend\` libr
 
   function resetDemo() {
     stopStream();
-    markdown = `# Hello World
-
-This is **Streamdown** — a Svelte port of Vercel's streaming markdown renderer.
-
-## Features
-
-- Streams in real-time
-- Repairs incomplete syntax
-- Code blocks, math, tables
-
-\`\`\`ts
-const greeting = "Hello from Streamdown";
-\`\`\`
-
-Math: $E = mc^2$
-
----
-
-Edit this text to try it yourself.`;
+    markdown = sampleText;
   }
 
   onMount(() => {
