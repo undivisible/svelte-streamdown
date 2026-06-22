@@ -222,14 +222,14 @@ const postProcessTree = (tree: Nodes, options: StreamdownOptions): Root => {
   return tree as Root;
 };
 
-const createProcessor = (options: StreamdownOptions) => {
+const createProcessor = (options: StreamdownOptions, hasCode = true, hasHtml = true) => {
   const rehypePlugins = options.rehypePlugins || EMPTY_PLUGINS;
   const remarkPlugins = options.remarkPlugins || EMPTY_PLUGINS;
   const remarkRehypeOptions = options.remarkRehypeOptions
     ? { ...DEFAULT_REMARK_REHYPE_OPTIONS, ...options.remarkRehypeOptions }
     : DEFAULT_REMARK_REHYPE_OPTIONS;
 
-  return unified()
+  const p = unified()
     .use(remarkParse)
     .use([
       remarkGfm,
@@ -238,19 +238,49 @@ const createProcessor = (options: StreamdownOptions) => {
       remarkMath,
       ...remarkPlugins,
     ])
-    .use(remarkRehype, remarkRehypeOptions)
-    .use(rehypeRaw)
-    .use(rehypeSanitize, defaultSanitizeSchema)
-    .use(rehypeKatex)
-    .use(rehypeShiki)
-    .use(harden, {
-      allowedImagePrefixes: ["*"],
-      allowedLinkPrefixes: ["*"],
-      allowedProtocols: ["*"],
-      defaultOrigin: undefined,
-      allowDataImages: true,
-    })
-    .use(rehypePlugins);
+    .use(remarkRehype, remarkRehypeOptions);
+
+  // ponytail: skip rehype-raw when no HTML in source
+  if (hasHtml) p.use(rehypeRaw);
+
+  p.use(rehypeSanitize, defaultSanitizeSchema)
+    .use(rehypeKatex);
+
+  // ponytail: skip rehype-shiki when no code blocks
+  if (hasCode) p.use(rehypeShiki);
+
+  p.use(harden, {
+    allowedImagePrefixes: ["*"],
+    allowedLinkPrefixes: ["*"],
+    allowedProtocols: ["*"],
+    defaultOrigin: undefined,
+    allowDataImages: true,
+  }).use(rehypePlugins);
+
+  return p;
+};
+
+// ponytail: processor cache, same options → same processor. Evicts when plugins change.
+let cachedProcessorKey = "";
+let cachedProcessor: ReturnType<typeof createProcessor> | null = null;
+
+const getProcessor = (
+  options: StreamdownOptions,
+  hasCode: boolean,
+  hasHtml: boolean,
+) => {
+  const key = JSON.stringify({
+    rp: options.remarkPlugins?.length ?? 0,
+    hp: options.rehypePlugins?.length ?? 0,
+    rr: options.remarkRehypeOptions,
+    dir: options.dir,
+    code: hasCode,
+    html: hasHtml,
+  });
+  if (key === cachedProcessorKey && cachedProcessor) return cachedProcessor;
+  cachedProcessorKey = key;
+  cachedProcessor = createProcessor(options, hasCode, hasHtml);
+  return cachedProcessor;
 };
 
 export const renderMarkdownToHtml = async (
@@ -260,11 +290,14 @@ export const renderMarkdownToHtml = async (
   return toHtml(await renderMarkdownToRoot(markdown, options));
 };
 
+const CODE_BLOCK_PATTERN = /```|`[^`]+`/;
+const HTML_TAG_PATTERN = /<[a-zA-Z][^>]*>/;
+
 export const renderMarkdownToRoot = async (
   markdown: string,
   options: StreamdownOptions = {},
 ): Promise<Root> => {
-  const processor = createProcessor(options);
+  const processor = getProcessor(options, CODE_BLOCK_PATTERN.test(markdown), HTML_TAG_PATTERN.test(markdown));
   const normalized = options.normalizeHtmlIndentation
     ? normalizeHtmlIndentation(markdown)
     : markdown;
@@ -297,15 +330,25 @@ export const renderStreamdownBlocks = async (
   const blocks =
     options.mode === "static" ? [repaired] : parseMarkdownIntoBlocks(repaired);
 
+  const dir = (options.dir === "rtl" ? "rtl" : "ltr") as "ltr" | "rtl";
+  const hasCode = CODE_BLOCK_PATTERN.test(repaired);
+  const hasHtml = HTML_TAG_PATTERN.test(repaired);
+  const processor = getProcessor(options, hasCode, hasHtml);
+  const normalized = options.normalizeHtmlIndentation
+    ? normalizeHtmlIndentation(repaired)
+    : undefined;
+
   const rendered = await Promise.all(
     blocks.map(async (block, index) => {
-      const tree = await renderMarkdownToRoot(block, options);
+      const input = normalized ?? block;
+      const tree = await processor.run(processor.parse(input), input);
+      const processed = postProcessTree(tree as Nodes, options);
       return {
         key: `${index}:${block.length}:${block.slice(0, 16)}`,
         markdown: block,
-        html: toHtml(tree),
-        tree,
-        dir: (options.dir === "rtl" ? "rtl" : "ltr") as "ltr" | "rtl",
+        html: toHtml(processed),
+        tree: processed,
+        dir,
       };
     }),
   );
