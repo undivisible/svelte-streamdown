@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Element } from "hast";
-  import { onMount } from "svelte";
 
   let {
     node,
@@ -8,31 +7,37 @@
     node: Element;
   } = $props();
 
-  const chart = (node.properties?.dataCode as string) ?? "";
+  const chart = $derived((node.properties?.dataCode as string) ?? "");
   let container: HTMLDivElement;
   let error = $state(false);
   let rendered = $state(false);
+  let lastChart = "";
 
-  onMount(async () => {
-    if (!chart || !container) return;
+  $effect(() => {
+    const current = chart;
+    if (!current || !container || current === lastChart) return;
+    lastChart = current;
+    error = false;
+    rendered = false;
 
-    try {
-      // Dynamic import — mermaid is an optional peer dependency
-      const mod: any = await import("mermaid");
-      const mermaid = mod.default ?? mod;
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: "default",
-        securityLevel: "loose",
-      });
+    (async () => {
+      try {
+        const mod: any = await import("mermaid");
+        const mermaid = mod.default ?? mod;
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "default",
+          securityLevel: "loose",
+        });
 
-      const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
-      const { svg } = await mermaid.render(id, chart);
-      container.innerHTML = svg;
-      rendered = true;
-    } catch {
-      error = true;
-    }
+        const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
+        const { svg } = await mermaid.render(id, current);
+        container.innerHTML = svg;
+        rendered = true;
+      } catch {
+        error = true;
+      }
+    })();
   });
 </script>
 

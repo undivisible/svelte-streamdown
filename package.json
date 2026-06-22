@@ -1,11 +1,24 @@
 {
-  "name": "svelte-streamdown-monorepo",
-  "private": true,
-  "description": "Svelte streaming markdown renderer with incomplete markdown repair.",
-  "workspaces": [
-    "packages/remend",
-    "packages/svelte-streamdown",
-    "website"
+  "name": "svelte-streamdown",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "A Svelte markdown renderer designed for AI-powered streaming.",
+  "svelte": "./packages/svelte-streamdown/dist/index.js",
+  "types": "./packages/svelte-streamdown/dist/index.d.ts",
+  "exports": {
+    ".": {
+      "svelte": "./packages/svelte-streamdown/dist/index.js",
+      "types": "./packages/svelte-streamdown/dist/index.d.ts",
+      "import": "./packages/svelte-streamdown/dist/index.js"
+    },
+    "./styles.css": "./packages/svelte-streamdown/styles.css"
+  },
+  "files": [
+    "packages/svelte-streamdown/dist",
+    "packages/svelte-streamdown/styles.css",
+    "packages/svelte-streamdown/README.md",
+    "packages/remend/dist",
+    "packages/remend/src"
   ],
   "scripts": {
     "build": "turbo run build --filter remend --filter svelte-streamdown",
@@ -18,12 +31,14 @@
     "lint": "bun run --cwd packages/svelte-streamdown lint && ultracite check",
     "format": "bun run --cwd packages/svelte-streamdown format && ultracite fix",
     "format:check": "bun run --cwd packages/svelte-streamdown format:check && ultracite check",
-    "changeset": "changeset",
-    "changeset:version": "changeset version",
-    "changeset:publish": "bun run build && changeset publish",
     "bench": "turbo run bench --filter remend",
     "dev:site": "bun run --cwd website dev"
   },
+  "workspaces": [
+    "packages/remend",
+    "packages/svelte-streamdown",
+    "website"
+  ],
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
     "@changesets/cli": "^2.30.0",
@@ -37,5 +52,21 @@
   "packageManager": "bun@1.3.14",
   "engines": {
     "node": ">=18"
-  }
+  },
+  "author": "Max Carter",
+  "license": "MPL-2.0",
+  "homepage": "https://github.com/undivisible/svelte-streamdown",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/undivisible/svelte-streamdown.git"
+  },
+  "keywords": [
+    "svelte",
+    "markdown",
+    "streaming",
+    "ai",
+    "shiki",
+    "mermaid",
+    "katex"
+  ]
 }

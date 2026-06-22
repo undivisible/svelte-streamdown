@@ -7,7 +7,8 @@
     "target": "ES2022",
     "module": "ESNext",
     "lib": ["ES2022", "ESNext", "DOM", "DOM.Iterable"],
-    "types": ["svelte"]
+    "types": ["svelte"],
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/**/*.svelte", "__tests__/**/*.ts"],
   "exclude": ["dist"]

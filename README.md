@@ -20,7 +20,15 @@ Port of [Vercel Streamdown](https://github.com/vercel/streamdown) for Svelte 5.
 ## Install
 
 ```bash
-npm install svelte-streamdown
+npm install github:undivisible/svelte-streamdown
+```
+
+Or with other package managers:
+
+```bash
+bun add github:undivisible/svelte-streamdown
+pnpm add github:undivisible/svelte-streamdown
+yarn add github:undivisible/svelte-streamdown
 ```
 
 Requires Svelte 5.
