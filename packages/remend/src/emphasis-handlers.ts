@@ -249,8 +249,8 @@ export const countTripleAsterisks = (text: string): number => {
   return count;
 };
 
-// Counts ** pairs outside fenced code blocks
-const countDoubleAsterisksOutsideCodeBlocks = (text: string): number => {
+// Counts character pairs (e.g. ** or __) outside fenced code blocks
+const countCharPairsOutsideCodeBlocks = (text: string, char: string): number => {
   let count = 0;
   let inCodeBlock = false;
 
@@ -268,34 +268,7 @@ const countDoubleAsterisksOutsideCodeBlocks = (text: string): number => {
     if (inCodeBlock) {
       continue;
     }
-    if (text[i] === "*" && i + 1 < text.length && text[i + 1] === "*") {
-      count += 1;
-      i += 1;
-    }
-  }
-  return count;
-};
-
-// Counts __ pairs outside fenced code blocks
-const countDoubleUnderscoresOutsideCodeBlocks = (text: string): number => {
-  let count = 0;
-  let inCodeBlock = false;
-
-  for (let i = 0; i < text.length; i += 1) {
-    if (
-      text[i] === "`" &&
-      i + 2 < text.length &&
-      text[i + 1] === "`" &&
-      text[i + 2] === "`"
-    ) {
-      inCodeBlock = !inCodeBlock;
-      i += 2;
-      continue;
-    }
-    if (inCodeBlock) {
-      continue;
-    }
-    if (text[i] === "_" && i + 1 < text.length && text[i + 1] === "_") {
+    if (text[i] === char && i + 1 < text.length && text[i + 1] === char) {
       count += 1;
       i += 1;
     }
@@ -355,7 +328,7 @@ export const handleIncompleteBold = (text: string): string => {
     return text;
   }
 
-  const asteriskPairs = countDoubleAsterisksOutsideCodeBlocks(text);
+  const asteriskPairs = countCharPairsOutsideCodeBlocks(text, "*");
   if (asteriskPairs % 2 === 1) {
     // Check for half-complete closing marker: **content* should become **content**
     // The trailing * is the first char of the closing ** being streamed
@@ -416,7 +389,7 @@ export const handleIncompleteDoubleUnderscoreItalic = (
           isWithinCompleteInlineCode(text, markerIndex)
         )
       ) {
-        const underscorePairs = countDoubleUnderscoresOutsideCodeBlocks(text);
+        const underscorePairs = countCharPairsOutsideCodeBlocks(text, "_");
         if (underscorePairs % 2 === 1) {
           return `${text}_`;
         }
@@ -440,7 +413,7 @@ export const handleIncompleteDoubleUnderscoreItalic = (
     return text;
   }
 
-  const underscorePairs = countDoubleUnderscoresOutsideCodeBlocks(text);
+  const underscorePairs = countCharPairsOutsideCodeBlocks(text, "_");
   if (underscorePairs % 2 === 1) {
     return `${text}__`;
   }
@@ -621,8 +594,9 @@ const handleTrailingAsterisksForUnderscore = (text: string): string | null => {
   }
 
   const textWithoutTrailingAsterisks = text.slice(0, -2);
-  const asteriskPairsAfterRemoval = countDoubleAsterisksOutsideCodeBlocks(
-    textWithoutTrailingAsterisks
+  const asteriskPairsAfterRemoval = countCharPairsOutsideCodeBlocks(
+    textWithoutTrailingAsterisks,
+    "*"
   );
 
   // If removing trailing ** makes the count odd, it was added to close an unclosed **
@@ -699,7 +673,7 @@ export const handleIncompleteSingleUnderscoreItalic = (
 
 // Helper to check if bold-italic markers are already balanced
 const areBoldItalicMarkersBalanced = (text: string): boolean => {
-  const asteriskPairs = countDoubleAsterisksOutsideCodeBlocks(text);
+  const asteriskPairs = countCharPairsOutsideCodeBlocks(text, "*");
   const singleAsterisks = countSingleAsterisks(text);
   return asteriskPairs % 2 === 0 && singleAsterisks % 2 === 0;
 };
