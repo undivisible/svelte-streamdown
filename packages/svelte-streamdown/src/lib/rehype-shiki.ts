@@ -1,31 +1,45 @@
 import { createHighlighter, type BundledLanguage } from "shiki";
 import { visit } from "unist-util-visit";
 
-let highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
-
-const getHighlighter = (themes: string[]) => {
-  if (!highlighterPromise) {
-    highlighterPromise = createHighlighter({
-      themes,
-      langs: Object.keys(
-        import("shiki/langs")
-          .then((m) => m.default)
-          .catch(() => ({}))
-      ) as BundledLanguage[],
-    });
-  }
-  return highlighterPromise;
-};
-
 interface RehypeShikiOptions {
   themes?: [string, string];
 }
 
+// Pre-initialized highlighter (lazy, sync access after first await)
+let highlighter: Awaited<ReturnType<typeof createHighlighter>> | null = null;
+let initPromise: Promise<void> | null = null;
+
+const ensureHighlighter = (themes: string[]) => {
+  if (highlighter) return;
+  if (!initPromise) {
+    initPromise = createHighlighter({
+      themes,
+      langs: [
+        "javascript", "typescript", "svelte", "html", "css", "json",
+        "bash", "shell", "python", "rust", "go", "yaml", "markdown",
+        "sql", "graphql", "toml", "xml", "jsx", "tsx",
+      ],
+    }).then((h) => {
+      highlighter = h;
+    });
+  }
+  // Throw promise to signal async (unified will handle if using run())
+  throw initPromise;
+};
+
 export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
   const themes = options.themes ?? ["github-light", "github-dark"];
 
-  return async (tree: any) => {
-    const highlighter = await getHighlighter(themes);
+  return (tree: any) => {
+    // Try to get highlighter, if not ready yet, skip highlighting
+    if (!highlighter) {
+      try {
+        ensureHighlighter(themes);
+      } catch {
+        // Promise thrown — highlighter not ready yet, skip
+        return;
+      }
+    }
 
     visit(tree, "element", (node: any) => {
       if (node.tagName !== "pre") return;
@@ -44,17 +58,16 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       const codeText = textNode.value as string;
 
       try {
-        const loadedLangs = highlighter.getLoadedLanguages();
+        const loadedLangs = highlighter!.getLoadedLanguages();
         const validLang = loadedLangs.includes(lang as BundledLanguage)
           ? lang
           : "text";
 
-        const result = highlighter.codeToTokens(codeText, {
+        const result = highlighter!.codeToTokens(codeText, {
           lang: validLang as BundledLanguage,
           themes: { light: themes[0], dark: themes[1] },
         });
 
-        // Replace code content with highlighted tokens
         code.children = result.tokens.map((line: any) => ({
           type: "element",
           tagName: "span",
@@ -67,11 +80,10 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           })),
         }));
 
-        // Add shiki class to pre for theming
         if (!code.properties) code.properties = {};
         code.properties.className = [
           ...(code.properties.className ?? []),
-          `shiki`,
+          "shiki",
           `shiki-themes-${themes[0]}-${themes[1]}`,
         ];
       } catch {
@@ -79,4 +91,18 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       }
     });
   };
+};
+
+// Call this once at app startup to pre-warm the highlighter (client-side)
+export const initShiki = async (themes: string[] = ["github-light", "github-dark"]) => {
+  if (!highlighter) {
+    highlighter = await createHighlighter({
+      themes,
+      langs: [
+        "javascript", "typescript", "svelte", "html", "css", "json",
+        "bash", "shell", "python", "rust", "go", "yaml", "markdown",
+        "sql", "graphql", "toml", "xml", "jsx", "tsx",
+      ],
+    });
+  }
 };

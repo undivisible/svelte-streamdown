@@ -3,12 +3,7 @@
   import { Streamdown } from "svelte-streamdown";
   import "svelte-streamdown/styles.css";
 
-  let markdown = $state("");
-
-  let isStreaming = $state(false);
-  let streamInterval: ReturnType<typeof setInterval> | null = null;
-
-  const sampleText = `# Hello World
+  const fullText = `# Hello World
 
 This is **Streamdown** — a Svelte port of Vercel's streaming markdown renderer.
 
@@ -55,6 +50,10 @@ Streamdown processes markdown as it arrives, token by token. The \`remend\` libr
 
 *Port of [Vercel Streamdown](https://github.com/vercel/streamdown) for Svelte 5.*`;
 
+  let markdown = $state(fullText);
+  let isStreaming = $state(false);
+  let streamInterval: ReturnType<typeof setInterval> | null = null;
+
   function startStream() {
     if (isStreaming) return;
     isStreaming = true;
@@ -62,8 +61,8 @@ Streamdown processes markdown as it arrives, token by token. The \`remend\` libr
     let i = 0;
 
     streamInterval = setInterval(() => {
-      if (i < sampleText.length) {
-        markdown += sampleText[i];
+      if (i < fullText.length) {
+        markdown += fullText[i];
         i++;
       } else {
         stopStream();
@@ -81,10 +80,12 @@ Streamdown processes markdown as it arrives, token by token. The \`remend\` libr
 
   function resetDemo() {
     stopStream();
-    markdown = sampleText;
+    markdown = fullText;
   }
 
   onMount(() => {
+    // Auto-stream on load: clear and replay
+    markdown = "";
     startStream();
   });
 </script>
