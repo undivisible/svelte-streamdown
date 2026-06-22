@@ -20,10 +20,31 @@ const ensureHighlighter = (): Promise<any> => {
   return highlighterReady;
 };
 
-const htmlStyleToCSS = (htmlStyle: Record<string, string>): string =>
-  Object.entries(htmlStyle)
-    .map(([k, v]) => `${k}:${v}`)
-    .join(";");
+/**
+ * Build an inline style string from token.htmlStyle.
+ * Redirects shiki's direct CSS properties to CSS custom properties
+ * so our stylesheet can switch themes via media queries / .dark class.
+ *
+ * Light color → --shiki-light (used by CSS default)
+ * Dark color  → --shiki-dark  (used by CSS dark mode)
+ */
+const tokenToStyle = (token: any): string | undefined => {
+  if (!token.htmlStyle) return undefined;
+
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(token.htmlStyle)) {
+    if (key === "color") {
+      // Redirect direct color to CSS var — our CSS sets `color: var(--shiki-light)`
+      parts.push(`--shiki-light:${value}`);
+    } else if (key === "background-color") {
+      parts.push(`--shiki-light-bg:${value}`);
+    } else {
+      // Pass through CSS custom properties like --shiki-dark
+      parts.push(`${key}:${value}`);
+    }
+  }
+  return parts.length > 0 ? parts.join(";") : undefined;
+};
 
 export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
   const themes = options.themes ?? ["github-light", "github-dark"];
@@ -36,7 +57,6 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       return;
     }
 
-    // Collect pre > code pairs
     const codeNodes: Array<{ pre: any; code: any; lang: string }> = [];
     visit(tree, "element", (node: any) => {
       if (node.tagName !== "pre") return;
@@ -49,7 +69,6 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       codeNodes.push({ pre: node, code, lang });
     });
 
-    // Load languages on demand, skip invalid ones
     for (const { lang } of codeNodes) {
       if (!lang || lang === "text") continue;
       const loaded = h.getLoadedLanguages();
@@ -76,14 +95,29 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           themes: { light: themes[0], dark: themes[1] },
         });
 
-        // Set background color on <pre> so code blocks get shiki's bg
-        // even when the page has a dark background
-        if (result.bg) {
-          if (!pre.properties) pre.properties = {};
-          pre.properties.style = `background-color:${result.bg}`;
+        // Set CSS custom properties on <pre> for theme switching.
+        // Users override via .svelte-streamdown pre or @media queries.
+        const preStyleParts: string[] = [];
+        if (result.bg) preStyleParts.push(`--shiki-light-bg:${result.bg}`);
+        if (result.fg) preStyleParts.push(`--shiki-light-fg:${result.fg}`);
+        // result.rootStyle contains --shiki-dark-bg from the dark theme
+        if (result.rootStyle) {
+          for (const decl of result.rootStyle.split(";")) {
+            const idx = decl.indexOf(":");
+            if (idx > 0) {
+              const prop = decl.slice(0, idx).trim();
+              const val = decl.slice(idx + 1).trim();
+              if (prop && val) preStyleParts.push(`${prop}:${val}`);
+            }
+          }
         }
 
-        // Highlight tokens with dual-theme CSS vars
+        if (preStyleParts.length > 0) {
+          if (!pre.properties) pre.properties = {};
+          pre.properties.style = preStyleParts.join(";");
+        }
+
+        // Highlight tokens
         code.children = result.tokens.map((line: any) => ({
           type: "element",
           tagName: "span",
@@ -92,9 +126,7 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
             type: "element",
             tagName: "span",
             properties: {
-              style: token.htmlStyle
-                ? htmlStyleToCSS(token.htmlStyle)
-                : undefined,
+              style: tokenToStyle(token),
             },
             children: [{ type: "text", value: token.content }],
           })),

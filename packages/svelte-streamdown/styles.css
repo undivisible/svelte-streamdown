@@ -44,15 +44,6 @@
   white-space: pre;
 }
 
-.svelte-streamdown .shiki .line {
-  display: block;
-}
-
-/* shiki sets background-color on <pre> for light theme */
-.svelte-streamdown :where(pre.shiki, pre:has(code.shiki)) {
-  color: var(--shiki-dark, #24292e);
-}
-
 .svelte-streamdown :where(table) {
   border-collapse: collapse;
   width: 100%;
@@ -71,4 +62,54 @@
   display: inline-block;
   margin-inline-start: 0.125rem;
   opacity: 0.7;
+}
+
+/* ── Shiki dual-theme support ──
+ *
+ * rehype-shiki sets these CSS custom properties on <pre>:
+ *   --shiki-light-bg, --shiki-light-fg  (from light theme)
+ *   --shiki-dark-bg, --shiki-dark       (from dark theme)
+ *
+ * Token spans get:
+ *   --shiki-light   (light theme color)
+ *   --shiki-dark    (dark theme color)
+ *
+ * Theme switching is automatic via prefers-color-scheme.
+ * Override by targeting .svelte-streamdown pre in your own CSS.
+ */
+
+/* Light mode (default) */
+.svelte-streamdown :where(pre:has(code.shiki)) {
+  background-color: var(--shiki-light-bg, transparent);
+  color: var(--shiki-light-fg, inherit);
+}
+
+.svelte-streamdown .shiki .line {
+  display: block;
+}
+
+.svelte-streamdown .shiki .line span {
+  color: var(--shiki-light, inherit);
+}
+
+/* Dark mode — system preference */
+@media (prefers-color-scheme: dark) {
+  .svelte-streamdown :where(pre:has(code.shiki)) {
+    background-color: var(--shiki-dark-bg, var(--shiki-light-bg, transparent));
+    color: var(--shiki-dark-fg, var(--shiki-light-fg, inherit));
+  }
+
+  .svelte-streamdown .shiki .line span {
+    color: var(--shiki-dark, var(--shiki-light, inherit));
+  }
+}
+
+/* Dark mode — manual .dark class on ancestor */
+.dark .svelte-streamdown :where(pre:has(code.shiki)) {
+  background-color: var(--shiki-dark-bg, var(--shiki-light-bg, transparent));
+  color: var(--shiki-dark-fg, var(--shiki-light-fg, inherit));
+}
+
+.dark .svelte-streamdown .shiki .line span {
+  color: var(--shiki-dark, var(--shiki-light, inherit));
 }
