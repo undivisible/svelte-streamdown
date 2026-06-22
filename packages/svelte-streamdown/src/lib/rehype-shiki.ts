@@ -20,6 +20,11 @@ const getHighlighter = async () => {
   return highlighterPromise;
 };
 
+const htmlStyleToCSS = (htmlStyle: Record<string, string>): string =>
+  Object.entries(htmlStyle)
+    .map(([k, v]) => `${k}:${v}`)
+    .join(";");
+
 export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
   const themes = options.themes ?? ["github-light", "github-dark"];
 
@@ -31,8 +36,7 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       return;
     }
 
-    // Collect all pre > code nodes first (visit doesn't support async)
-    const codeNodes: Array<{ pre: any; code: any; lang: string }> = [];
+    const codeNodes: Array<{ code: any; lang: string }> = [];
     visit(tree, "element", (node: any) => {
       if (node.tagName !== "pre") return;
       const code = node.children?.find((c: any) => c.tagName === "code");
@@ -41,10 +45,9 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
         c.startsWith("language-"),
       );
       const lang = (langClass?.replace("language-", "") ?? "") as string;
-      codeNodes.push({ pre: node, code, lang });
+      codeNodes.push({ code, lang });
     });
 
-    // Load needed languages in parallel
     const loaded = h.getLoadedLanguages();
     const needed = [
       ...new Set(
@@ -59,7 +62,6 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       );
     }
 
-    // Highlight each block
     for (const { code, lang } of codeNodes) {
       const textNode = code.children?.find((c: any) => c.type === "text");
       if (!textNode) continue;
@@ -75,6 +77,7 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           themes: { light: themes[0], dark: themes[1] },
         });
 
+        // shiki v4: token.htmlStyle contains color + --shiki-dark CSS vars
         code.children = result.tokens.map((line: any) => ({
           type: "element",
           tagName: "span",
@@ -82,7 +85,11 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           children: line.map((token: any) => ({
             type: "element",
             tagName: "span",
-            properties: { style: `color:${token.color}` },
+            properties: {
+              style: token.htmlStyle
+                ? htmlStyleToCSS(token.htmlStyle)
+                : undefined,
+            },
             children: [{ type: "text", value: token.content }],
           })),
         }));

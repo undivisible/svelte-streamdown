@@ -272,6 +272,21 @@ export const renderMarkdownToRoot = async (
   return postProcessTree(tree as Nodes, options);
 };
 
+export const renderSingleBlock = async (
+  block: string,
+  index: number,
+  options: StreamdownOptions = {},
+): Promise<RenderedBlock> => {
+  const tree = await renderMarkdownToRoot(block, options);
+  return {
+    key: `${index}:${block.length}:${block.slice(0, 16)}`,
+    markdown: block,
+    html: toHtml(tree),
+    tree,
+    dir: (options.dir === "rtl" ? "rtl" : "ltr") as "ltr" | "rtl",
+  };
+};
+
 export const renderStreamdownBlocks = async (
   markdown: string,
   options: StreamdownOptions = {},
