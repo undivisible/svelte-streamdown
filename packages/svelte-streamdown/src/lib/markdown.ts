@@ -5,6 +5,8 @@ import { harden } from "rehype-harden";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import remarkCjkFriendly from "remark-cjk-friendly";
+import remarkCjkFriendlyGfmStrikethrough from "remark-cjk-friendly-gfm-strikethrough";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
@@ -15,6 +17,7 @@ import type { PluggableList } from "unified";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { parseMarkdownIntoBlocks } from "./parse-blocks";
+import { rehypeShiki } from "./rehype-shiki";
 
 export type AllowElement = (
   element: Readonly<Element>,
@@ -208,11 +211,12 @@ const createProcessor = (options: StreamdownOptions) => {
 
   return unified()
     .use(remarkParse)
-    .use([remarkGfm, remarkMath, ...remarkPlugins])
+    .use([remarkGfm, remarkCjkFriendly, remarkCjkFriendlyGfmStrikethrough, remarkMath, ...remarkPlugins])
     .use(remarkRehype, remarkRehypeOptions)
     .use(rehypeRaw)
     .use(rehypeSanitize, defaultSanitizeSchema)
     .use(rehypeKatex)
+    .use(rehypeShiki)
     .use(harden, {
       allowedImagePrefixes: ["*"],
       allowedLinkPrefixes: ["*"],
