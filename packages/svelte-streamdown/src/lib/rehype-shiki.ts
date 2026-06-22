@@ -20,26 +20,16 @@ const ensureHighlighter = (): Promise<any> => {
   return highlighterReady;
 };
 
-/**
- * Build an inline style string from token.htmlStyle.
- * Redirects shiki's direct CSS properties to CSS custom properties
- * so our stylesheet can switch themes via media queries / .dark class.
- *
- * Light color → --shiki-light (used by CSS default)
- * Dark color  → --shiki-dark  (used by CSS dark mode)
- */
 const tokenToStyle = (token: any): string | undefined => {
   if (!token.htmlStyle) return undefined;
 
   const parts: string[] = [];
   for (const [key, value] of Object.entries(token.htmlStyle)) {
     if (key === "color") {
-      // Redirect direct color to CSS var — our CSS sets `color: var(--shiki-light)`
       parts.push(`--shiki-light:${value}`);
     } else if (key === "background-color") {
       parts.push(`--shiki-light-bg:${value}`);
     } else {
-      // Pass through CSS custom properties like --shiki-dark
       parts.push(`${key}:${value}`);
     }
   }
@@ -57,26 +47,31 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       return;
     }
 
-    const codeNodes: Array<{ pre: any; code: any; lang: string }> = [];
-    visit(tree, "element", (node: any) => {
-      if (node.tagName !== "pre") return;
-      const code = node.children?.find((c: any) => c.tagName === "code");
-      if (!code) return;
-      const langClass = code.properties?.className?.find((c: string) =>
-        c.startsWith("language-"),
-      );
-      const lang = (langClass?.replace("language-", "") ?? "") as string;
+    const codeNodes: Array<{
+      pre: any;
+      code: any;
+      lang: string;
+      parent: any;
+      index: number;
+    }> = [];
 
-      // Mermaid: skip shiki, wrap for Mermaid.svelte component
-      if (lang === "mermaid") {
-        const textNode = code.children?.find((c: any) => c.type === "text");
-        if (!textNode) return;
-        const parent = tree.children?.find((n: any) =>
-          n.children?.includes(node),
+    visit(
+      tree,
+      "element",
+      (node: any, index: number | undefined, parent: any) => {
+        if (node.tagName !== "pre") return;
+        const code = node.children?.find((c: any) => c.tagName === "code");
+        if (!code) return;
+        const langClass = code.properties?.className?.find((c: string) =>
+          c.startsWith("language-"),
         );
-        if (parent) {
-          const idx = parent.children.indexOf(node);
-          parent.children[idx] = {
+        const lang = (langClass?.replace("language-", "") ?? "") as string;
+
+        // Mermaid: skip shiki, wrap for Mermaid.svelte component
+        if (lang === "mermaid") {
+          const textNode = code.children?.find((c: any) => c.type === "text");
+          if (!textNode || !parent || typeof index !== "number") return;
+          parent.children[index] = {
             type: "element",
             tagName: "div",
             properties: {
@@ -85,12 +80,12 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
             },
             children: [],
           };
+          return;
         }
-        return;
-      }
 
-      codeNodes.push({ pre: node, code, lang });
-    });
+        codeNodes.push({ pre: node, code, lang, parent, index: index ?? 0 });
+      },
+    );
 
     for (const { lang } of codeNodes) {
       if (!lang || lang === "text") continue;
@@ -103,7 +98,7 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
       }
     }
 
-    for (const { pre, code, lang } of codeNodes) {
+    for (const { pre, code, lang, parent, index } of codeNodes) {
       const textNode = code.children?.find((c: any) => c.type === "text");
       if (!textNode) continue;
 
@@ -118,7 +113,7 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           themes: { light: themes[0], dark: themes[1] },
         });
 
-        // Set CSS custom properties on <pre> for theme switching.
+        // CSS custom properties on <pre> for theme switching
         const preStyleParts: string[] = [];
         if (result.bg) preStyleParts.push(`--shiki-light-bg:${result.bg}`);
         if (result.fg) preStyleParts.push(`--shiki-light-fg:${result.fg}`);
@@ -146,9 +141,7 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           children: line.map((token: any) => ({
             type: "element",
             tagName: "span",
-            properties: {
-              style: tokenToStyle(token),
-            },
+            properties: { style: tokenToStyle(token) },
             children: [{ type: "text", value: token.content }],
           })),
         }));
@@ -160,21 +153,15 @@ export const rehypeShiki = (options: RehypeShikiOptions = {}) => {
           `shiki-themes-${themes[0]}-${themes[1]}`,
         ];
 
-        // Wrap <pre> in a container div for language label + copy button
-        // ponytail: find parent that holds this <pre> and replace with wrapper
-        const parent = tree.children?.find((n: any) =>
-          n.children?.includes(pre),
-        );
-        if (parent) {
-          const idx = parent.children.indexOf(pre);
-          const rawText = textNode.value as string;
-          parent.children[idx] = {
+        // Wrap <pre> in div.sd-code-block for header + copy button
+        if (parent && typeof index === "number") {
+          parent.children[index] = {
             type: "element",
             tagName: "div",
             properties: {
               className: ["sd-code-block"],
               dataLang: lang || undefined,
-              dataCode: rawText,
+              dataCode: codeText,
             },
             children: [pre],
           };
