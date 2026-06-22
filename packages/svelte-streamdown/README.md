@@ -51,7 +51,11 @@ Requires Svelte 5.
 
 ## Code Highlighting
 
-Code blocks are highlighted with [Shiki](https://shiki.style/) using dual-theme CSS variables. This means both light and dark themes are baked into the HTML — your CSS switches between them.
+Code blocks are highlighted with [Shiki](https://shiki.style/) using dual-theme CSS variables. Both light and dark themes are baked into the HTML — your CSS switches between them.
+
+Code blocks include a **header bar** with:
+- Language label (e.g. "typescript")
+- Copy-to-clipboard button
 
 ```css
 /* Light mode (default) */
@@ -102,6 +106,39 @@ Math rendering via KaTeX. Wrap the package with remark-math and rehype-katex:
 />
 ```
 
+## Mermaid Diagrams
+
+Mermaid is supported as an opt-in feature. Install mermaid as a peer dependency, then use fenced code blocks with `mermaid` language:
+
+````markdown
+```mermaid
+graph TD
+  A[Start] --> B[End]
+```
+````
+
+Mermaid lazy-loads on mount and renders as SVG. Falls back to preformatted text if the diagram is invalid.
+
+```bash
+npm install mermaid
+```
+
+## Animations
+
+Pass `animated` as a string to select animation type:
+
+```svelte
+<Streamdown {markdown} animated="blur" />
+<Streamdown {markdown} animated="slide-up" />
+<Streamdown {markdown} animated="slide-down" />
+```
+
+Or use the boolean shorthand for fade-in:
+
+```svelte
+<Streamdown {markdown} animated />
+```
+
 ## Custom Plugins
 
 Pass any unified remark/rehype plugins:
@@ -141,7 +178,9 @@ This is a Svelte port of [Vercel Streamdown](https://github.com/vercel/streamdow
 | Lexing            | Custom remark pipeline                      | Same unified/remark pipeline          |
 | Code highlighting | Component-level plugin (`@streamdown/code`) | rehype plugin (inline in pipeline)    |
 | Math              | Opt-in (`@streamdown/math`)                 | Opt-in via remark-math + rehype-katex |
-| Mermaid           | Opt-in (`@streamdown/mermaid`)              | Not yet ported                        |
+| Mermaid           | Opt-in (`@streamdown/mermaid`)              | Opt-in (lazy-loaded)                  |
+| Animations        | Blur, fade, slide                           | Fade, blur, slide                     |
+| Code block header | Copy, download, language                    | Copy, language                        |
 | Theme system      | Tailwind + shadcn                           | Plain CSS (user stylesheets)          |
 | Streaming repair  | remend                                      | remend (same library)                 |
 
