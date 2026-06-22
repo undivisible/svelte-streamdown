@@ -16,5 +16,10 @@
     "astro": "^6.4.7",
     "svelte": "^5.51.0",
     "svelte-streamdown": "workspace:*"
+  },
+  "devDependencies": {
+    "@unocss/astro": "^66.7.2",
+    "@unocss/preset-uno": "^66.7.2",
+    "unocss": "^66.7.2"
   }
 }

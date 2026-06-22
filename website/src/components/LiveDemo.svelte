@@ -44,6 +44,15 @@ Streamdown processes markdown as it arrives, token by token. The \`remend\` libr
 4. **Sanitize** output for safety
 5. **Render** as Svelte components
 
+\`\`\`mermaid
+graph TD
+  A[Incoming Markdown] --> B[remend: Repair]
+  B --> C[remark: Parse]
+  C --> D[rehype: Transform]
+  D --> E[rehype-shiki: Highlight]
+  E --> F[Svelte: Render]
+\`\`\`
+
 > No flickering. No broken layouts. Just smooth streaming.
 
 ---

@@ -54,6 +54,7 @@ Requires Svelte 5.
 Code blocks are highlighted with [Shiki](https://shiki.style/) using dual-theme CSS variables. Both light and dark themes are baked into the HTML — your CSS switches between them.
 
 Code blocks include a **header bar** with:
+
 - Language label (e.g. "typescript")
 - Copy-to-clipboard button
 
@@ -151,28 +152,13 @@ Pass any unified remark/rehype plugins:
 />
 ```
 
-## Styling
-
-Import the default stylesheet for base typography:
-
-```js
-import "svelte-streamdown/styles.css";
-```
-
-Override in your own CSS by targeting `.svelte-streamdown`:
-
-```css
-.svelte-streamdown pre {
-  background: #1e1e2e;
-  border-radius: 8px;
-}
-```
-
 ## Differences from upstream
 
-This is a Svelte port of [Vercel Streamdown](https://github.com/vercel/streamdown) (React). Key differences:
+This is a Svelte port of [Vercel Streamdown](https://github.com/vercel/streamdown) (React).
 
-|                   | upstream (React)                            | this (Svelte)                         |
+### vs Vercel Streamdown (React)
+
+| Feature           | upstream (React)                            | this (Svelte)                         |
 | ----------------- | ------------------------------------------- | ------------------------------------- |
 | Framework         | React 18+                                   | Svelte 5                              |
 | Lexing            | Custom remark pipeline                      | Same unified/remark pipeline          |
@@ -183,6 +169,44 @@ This is a Svelte port of [Vercel Streamdown](https://github.com/vercel/streamdow
 | Code block header | Copy, download, language                    | Copy, language                        |
 | Theme system      | Tailwind + shadcn                           | Plain CSS (user stylesheets)          |
 | Streaming repair  | remend                                      | remend (same library)                 |
+
+### vs beynar/svelte-streamdown
+
+| Feature           | beynar (Svelte)                    | this (Svelte)                             |
+| ----------------- | ---------------------------------- | ----------------------------------------- |
+| Lexing engine     | `marked` (custom lexer)            | `unified`/remark (standard pipeline)      |
+| Code highlighting | Component-level (shiki/core)       | rehype plugin (inline in pipeline)        |
+| Theme system      | Tailwind + shadcn + clsx           | Plain CSS (framework-agnostic)            |
+| Component model   | Element + Svelte snippets          | HastNode (recursive hast→Svelte)          |
+| Mermaid           | Opt-in component import            | Opt-in (auto-detect `\`\`\`mermaid`)      |
+| Math              | Opt-in component import            | Opt-in via remark-math + rehype-katex     |
+| Animations        | Blur, fade, slide (configurable)   | Fade, blur, slide (CSS data-attribute)    |
+| Code block        | Copy + download + language         | Copy + language                           |
+| Security          | None built-in                      | rehype-harden sanitization                |
+| Streaming repair  | remend                             | remend (same library)                     |
+| CSS approach      | Tailwind utility classes           | CSS custom properties + `prefers-color`   |
+| Dual-theme        | Inline `color` per token           | CSS vars (`--shiki-light`/`--shiki-dark`) |
+| Package weight    | Heavy (tailwind + mermaid + katex) | Lean (mermaid/katex optional)             |
+| License           | MIT                                | MPL-2.0                                   |
+
+## Styling
+
+The library is CSS-framework-agnostic. Import the default stylesheet:
+
+```js
+import "svelte-streamdown/styles.css";
+```
+
+Works with plain CSS, Tailwind, UnoCSS, or any other framework. Override by targeting `.svelte-streamdown`:
+
+```css
+.svelte-streamdown pre {
+  background: #1e1e2e;
+  border-radius: 8px;
+}
+```
+
+The demo site uses [UnoCSS](https://unocss.dev/) for utility classes.
 
 ## License
 
