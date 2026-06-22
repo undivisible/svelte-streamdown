@@ -12,7 +12,6 @@ import remend, { type RemendOptions } from "remend";
 import type { PluggableList } from "unified";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
-import { detectTextDirection } from "./detect-direction";
 import { parseMarkdownIntoBlocks } from "./parse-blocks";
 
 export type AllowElement = (
@@ -245,10 +244,7 @@ export const renderStreamdownBlocks = (
       markdown: block,
       html: toHtml(tree),
       tree,
-      dir:
-        options.dir === "auto" || !options.dir
-          ? detectTextDirection(block)
-          : options.dir,
+      dir: options.dir === "rtl" ? "rtl" : "ltr",
     };
   });
 };
