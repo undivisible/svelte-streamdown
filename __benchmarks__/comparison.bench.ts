@@ -74,18 +74,18 @@ import { renderStreamdownBlocks as ours } from "../src/lib/markdown";
 // ── beynar implementation (marked) ─────────────────────────────
 // Import beynar's marked lexer for fair comparison
 
-let beynarParse: (md: string) => any;
+let beynarParse: ((md: string) => unknown) | undefined;
 try {
   const markedMod = await import("marked");
   const Lexer = markedMod.Lexer;
   beynarParse = (md: string) => Lexer.lex(md, { gfm: true });
 } catch {
-  beynarParse = () => null;
+  beynarParse = undefined;
 }
 
 // ── Upstream unified pipeline (same as ours without remend) ────
 
-let unifiedParse: (md: string) => any;
+let unifiedParse: ((md: string) => unknown) | undefined;
 try {
   const unifiedMod = await import("unified");
   const remarkParseMod = await import("remark-parse");
@@ -94,7 +94,7 @@ try {
   const processor = unified().use(remarkParse);
   unifiedParse = (md: string) => processor.parse(md);
 } catch {
-  unifiedParse = () => null;
+  unifiedParse = undefined;
 }
 
 // ── Benchmarks ─────────────────────────────────────────────────

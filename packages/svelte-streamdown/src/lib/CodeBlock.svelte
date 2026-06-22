@@ -9,8 +9,8 @@
     children: any;
   } = $props();
 
-  const lang = (node.properties?.dataLang as string) ?? "";
-  const code = (node.properties?.dataCode as string) ?? "";
+  const lang = $derived((node.properties?.dataLang as string) ?? "");
+  const code = $derived((node.properties?.dataCode as string) ?? "");
 
   let copied = $state(false);
 

@@ -222,7 +222,11 @@ const postProcessTree = (tree: Nodes, options: StreamdownOptions): Root => {
   return tree as Root;
 };
 
-const createProcessor = (options: StreamdownOptions, hasCode = true, hasHtml = true) => {
+const createProcessor = (
+  options: StreamdownOptions,
+  hasCode = true,
+  hasHtml = true,
+) => {
   const rehypePlugins = options.rehypePlugins || EMPTY_PLUGINS;
   const remarkPlugins = options.remarkPlugins || EMPTY_PLUGINS;
   const remarkRehypeOptions = options.remarkRehypeOptions
@@ -243,8 +247,7 @@ const createProcessor = (options: StreamdownOptions, hasCode = true, hasHtml = t
   // ponytail: skip rehype-raw when no HTML in source
   if (hasHtml) p.use(rehypeRaw);
 
-  p.use(rehypeSanitize, defaultSanitizeSchema)
-    .use(rehypeKatex);
+  p.use(rehypeSanitize, defaultSanitizeSchema).use(rehypeKatex);
 
   // ponytail: skip rehype-shiki when no code blocks
   if (hasCode) p.use(rehypeShiki);
@@ -297,7 +300,11 @@ export const renderMarkdownToRoot = async (
   markdown: string,
   options: StreamdownOptions = {},
 ): Promise<Root> => {
-  const processor = getProcessor(options, CODE_BLOCK_PATTERN.test(markdown), HTML_TAG_PATTERN.test(markdown));
+  const processor = getProcessor(
+    options,
+    CODE_BLOCK_PATTERN.test(markdown),
+    HTML_TAG_PATTERN.test(markdown),
+  );
   const normalized = options.normalizeHtmlIndentation
     ? normalizeHtmlIndentation(markdown)
     : markdown;
