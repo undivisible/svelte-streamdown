@@ -70,7 +70,6 @@
 }
 
 .svelte-streamdown :where(pre) {
-  border-radius: 0 0 0.5rem 0.5rem;
   overflow-x: auto;
   padding: 1rem;
   margin-block: 0;
