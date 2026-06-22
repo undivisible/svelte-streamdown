@@ -15,7 +15,8 @@
 
   $effect(() => {
     const current = chart;
-    if (!current || !container || current === lastChart) return;
+    if (!current || !container) return;
+    if (current === lastChart) return;
     lastChart = current;
     error = false;
     rendered = false;
@@ -42,11 +43,11 @@
 </script>
 
 <div class="sd-mermaid">
+  <!-- Container is ALWAYS rendered so bind:this works -->
+  <div bind:this={container}></div>
   {#if error}
     <pre class="sd-mermaid-error">{chart}</pre>
   {:else if !rendered}
     <pre class="sd-mermaid-loading">{chart}</pre>
-  {:else}
-    <div bind:this={container}></div>
   {/if}
 </div>
