@@ -54,7 +54,7 @@
     "node": ">=18"
   },
   "author": "Max Carter",
-  "license": "MPL-2.0",
+  "license": "ISC",
   "homepage": "https://github.com/undivisible/svelte-streamdown",
   "repository": {
     "type": "git",
