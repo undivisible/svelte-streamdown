@@ -248,7 +248,7 @@ This is a Svelte port of [Vercel Streamdown](https://github.com/vercel/streamdow
 | CSS approach      | Tailwind utility classes           | CSS custom properties + `prefers-color`   |
 | Dual-theme        | Inline `color` per token           | CSS vars (`--shiki-light`/`--shiki-dark`) |
 | Package weight    | Heavy (tailwind + mermaid + katex) | Lean (mermaid/katex optional)             |
-| License           | MIT                                | MPL-2.0                                   |
+| License           | MIT                                | ISC                                    |
 
 ## License
 
