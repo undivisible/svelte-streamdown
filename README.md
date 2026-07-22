@@ -252,4 +252,4 @@ This is a Svelte port of [Vercel Streamdown](https://github.com/vercel/streamdow
 
 ## License
 
-MPL-2.0. Upstream code from Vercel Streamdown retains Apache-2.0 license.
+ISC. Upstream code from Vercel Streamdown retains Apache-2.0 license.
