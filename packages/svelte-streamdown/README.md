@@ -41,7 +41,7 @@ Requires Svelte 5.
 
 ## Features
 
-- Streaming-optimized with incomplete markdown repair ([remend](https://github.com/vercel/streamdown/tree/main/packages/remend))
+- Streaming-optimized with incomplete markdown repair ([remend](https://www.npmjs.com/package/remend))
 - Code highlighting via Shiki with dual-theme CSS variables (light + dark)
 - Code blocks with language label + copy button
 - Mermaid diagrams (opt-in, install `mermaid` peer dep)

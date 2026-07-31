@@ -26,7 +26,6 @@
     "directory": "packages/svelte-streamdown"
   },
   "scripts": {
-    "prebuild": "bun run --cwd ../remend build",
     "build": "svelte-package",
     "check-types": "svelte-check --tsconfig ./tsconfig.json",
     "lint": "bun run check-types",

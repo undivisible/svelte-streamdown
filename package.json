@@ -4,21 +4,20 @@
   "type": "module",
   "description": "A Svelte markdown renderer designed for AI-powered streaming.",
   "scripts": {
-    "build": "turbo run build --filter remend --filter @tschk/svelte-streamdown",
-    "build:packages": "turbo run build --filter @tschk/svelte-streamdown --filter remend",
+    "build": "turbo run build --filter @tschk/svelte-streamdown",
+    "build:packages": "turbo run build --filter @tschk/svelte-streamdown",
     "check": "ultracite check",
     "fix": "ultracite fix",
-    "test": "turbo run test --filter remend --filter @tschk/svelte-streamdown",
-    "check-types": "turbo run check-types --filter remend --filter @tschk/svelte-streamdown",
+    "test": "turbo run test --filter @tschk/svelte-streamdown",
+    "check-types": "turbo run check-types --filter @tschk/svelte-streamdown",
     "typecheck": "bun run check-types",
     "lint": "bun run --cwd packages/svelte-streamdown lint && ultracite check",
     "format": "bun run --cwd packages/svelte-streamdown format && ultracite fix",
     "format:check": "bun run --cwd packages/svelte-streamdown format:check && ultracite check",
-    "bench": "turbo run bench --filter remend",
+    "bench": "turbo run bench --filter @tschk/svelte-streamdown",
     "dev:site": "bun run --cwd website dev"
   },
   "workspaces": [
-    "packages/remend",
     "packages/svelte-streamdown",
     "website"
   ],

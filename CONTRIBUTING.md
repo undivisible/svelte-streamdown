@@ -37,7 +37,6 @@ Thank you for your interest in contributing to Svelte Streamdown.
 This is a monorepo managed with Turbo. The main package is located at:
 
 - `packages/svelte-streamdown/` - The Svelte Streamdown component package
-- `packages/remend/` - Incomplete markdown repair utilities
 
 ### Available Scripts
 
@@ -127,7 +126,7 @@ bun vitest
 
 ### Writing Tests
 
-- Tests are located in `packages/svelte-streamdown/__tests__/` and `packages/remend/__tests__/`
+- Tests are located in `packages/svelte-streamdown/__tests__/`
 - Use descriptive test names
 - Test both success and error cases
 - Ensure good coverage for new features

@@ -50,7 +50,7 @@
   };
 
   const hasClassName = (el: Element, cls: string): boolean => {
-    const cn = el.properties?.className;
+    const cn: unknown = el.properties?.className;
     if (Array.isArray(cn)) return cn.includes(cls);
     if (typeof cn === "string") return cn.split(" ").includes(cls);
     return false;

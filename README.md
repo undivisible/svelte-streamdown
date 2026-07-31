@@ -6,7 +6,7 @@ Port of [Vercel Streamdown](https://github.com/vercel/streamdown) for Svelte 5. 
 
 ## Features
 
-- **Streaming-optimized** — handles incomplete markdown gracefully via [remend](https://github.com/vercel/streamdown/tree/main/packages/remend)
+- **Streaming-optimized** — handles incomplete markdown gracefully via [remend](https://www.npmjs.com/package/remend)
 - **Code highlighting** — Shiki-powered with dual-theme CSS variables (light + dark)
 - **Code block header** — language label + copy-to-clipboard button
 - **Mermaid diagrams** — opt-in, lazy-loaded on mount
@@ -200,7 +200,6 @@ Works with plain CSS, Tailwind, UnoCSS, or any other framework. Override by targ
 | Package                      | Description                                         |
 | ---------------------------- | --------------------------------------------------- |
 | `packages/svelte-streamdown` | Svelte component (npm: `@tschk/svelte-streamdown`)  |
-| `packages/remend`            | Incomplete markdown repair (retained from upstream) |
 
 ## Development
 
