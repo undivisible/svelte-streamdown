@@ -29,7 +29,7 @@
     class: className = ""
   }: StreamdownOptions & {
     markdown?: string;
-    animated?: boolean;
+    animated?: boolean | "blur" | "slide-up" | "slide-down";
     caret?: boolean | string;
     class?: string;
   } = $props();
@@ -124,7 +124,7 @@
   {#each blocks as block, i (i)}
     <div
       data-streamdown-block
-      data-sd-animate={animated ? "" : undefined}
+      data-sd-animate={animated ? (animated === true ? "" : animated) : undefined}
       dir={block.dir}
     >
       <HastNode node={block.tree} />
