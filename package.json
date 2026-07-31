@@ -3,30 +3,13 @@
   "version": "0.0.1",
   "type": "module",
   "description": "A Svelte markdown renderer designed for AI-powered streaming.",
-  "svelte": "./packages/svelte-streamdown/dist/index.js",
-  "types": "./packages/svelte-streamdown/dist/index.d.ts",
-  "exports": {
-    ".": {
-      "svelte": "./packages/svelte-streamdown/dist/index.js",
-      "types": "./packages/svelte-streamdown/dist/index.d.ts",
-      "import": "./packages/svelte-streamdown/dist/index.js"
-    },
-    "./styles.css": "./packages/svelte-streamdown/styles.css"
-  },
-  "files": [
-    "packages/svelte-streamdown/dist",
-    "packages/svelte-streamdown/styles.css",
-    "packages/svelte-streamdown/README.md",
-    "packages/remend/dist",
-    "packages/remend/src"
-  ],
   "scripts": {
-    "build": "turbo run build --filter remend --filter svelte-streamdown",
-    "build:packages": "turbo run build --filter svelte-streamdown --filter remend",
+    "build": "turbo run build --filter remend --filter @tschk/svelte-streamdown",
+    "build:packages": "turbo run build --filter @tschk/svelte-streamdown --filter remend",
     "check": "ultracite check",
     "fix": "ultracite fix",
-    "test": "turbo run test --filter remend --filter svelte-streamdown",
-    "check-types": "turbo run check-types --filter remend --filter svelte-streamdown",
+    "test": "turbo run test --filter remend --filter @tschk/svelte-streamdown",
+    "check-types": "turbo run check-types --filter remend --filter @tschk/svelte-streamdown",
     "typecheck": "bun run check-types",
     "lint": "bun run --cwd packages/svelte-streamdown lint && ultracite check",
     "format": "bun run --cwd packages/svelte-streamdown format && ultracite fix",
@@ -68,5 +51,6 @@
     "shiki",
     "mermaid",
     "katex"
-  ]
+  ],
+  "private": true
 }

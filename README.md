@@ -2,7 +2,7 @@
 
 A Svelte 5 markdown renderer for AI-powered streaming applications. Renders markdown as it arrives, token by token, with support for incomplete syntax, code highlighting, math, mermaid diagrams, and CJK text.
 
-Port of [Vercel Streamdown](https://github.com/vercel/streamdown) for Svelte 5.
+Port of [Vercel Streamdown](https://github.com/vercel/streamdown) for Svelte 5. Forked from [beynar/svelte-streamdown](https://github.com/beynar/svelte-streamdown).
 
 ## Features
 
@@ -20,15 +20,15 @@ Port of [Vercel Streamdown](https://github.com/vercel/streamdown) for Svelte 5.
 ## Install
 
 ```bash
-npm install github:undivisible/svelte-streamdown
+npm install @tschk/svelte-streamdown
 ```
 
 Or with other package managers:
 
 ```bash
-bun add github:undivisible/svelte-streamdown
-pnpm add github:undivisible/svelte-streamdown
-yarn add github:undivisible/svelte-streamdown
+bun add @tschk/svelte-streamdown
+pnpm add @tschk/svelte-streamdown
+yarn add @tschk/svelte-streamdown
 ```
 
 Requires Svelte 5.
@@ -37,8 +37,8 @@ Requires Svelte 5.
 
 ```svelte
 <script>
-  import { Streamdown } from "svelte-streamdown";
-  import "svelte-streamdown/styles.css";
+  import { Streamdown } from "@tschk/svelte-streamdown";
+  import "@tschk/svelte-streamdown/styles.css";
 
   let markdown = $state("**Hello** world");
 </script>
@@ -183,7 +183,7 @@ Pass any unified remark/rehype plugins:
 The library is CSS-framework-agnostic. Import the default stylesheet:
 
 ```js
-import "svelte-streamdown/styles.css";
+import "@tschk/svelte-streamdown/styles.css";
 ```
 
 Works with plain CSS, Tailwind, UnoCSS, or any other framework. Override by targeting `.svelte-streamdown`:
@@ -199,7 +199,7 @@ Works with plain CSS, Tailwind, UnoCSS, or any other framework. Override by targ
 
 | Package                      | Description                                         |
 | ---------------------------- | --------------------------------------------------- |
-| `packages/svelte-streamdown` | Svelte component (npm: `svelte-streamdown`)         |
+| `packages/svelte-streamdown` | Svelte component (npm: `@tschk/svelte-streamdown`)  |
 | `packages/remend`            | Incomplete markdown repair (retained from upstream) |
 
 ## Development

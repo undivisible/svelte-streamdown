@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Streamdown } from "svelte-streamdown";
-  import "svelte-streamdown/styles.css";
+  import { Streamdown } from "@tschk/svelte-streamdown";
+  import "@tschk/svelte-streamdown/styles.css";
   import remarkMath from "remark-math";
   import rehypeKatex from "rehype-katex";
   import "katex/dist/katex.min.css";

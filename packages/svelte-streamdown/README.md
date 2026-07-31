@@ -1,13 +1,13 @@
-# svelte-streamdown
+# @tschk/svelte-streamdown
 
 A Svelte 5 markdown renderer for AI-powered streaming applications.
 
-Port of [Vercel Streamdown](https://github.com/vercel/streamdown) for Svelte 5.
+Port of [Vercel Streamdown](https://github.com/vercel/streamdown) for Svelte 5. Forked from [beynar/svelte-streamdown](https://github.com/beynar/svelte-streamdown).
 
 ## Install
 
 ```bash
-npm install svelte-streamdown
+npm install @tschk/svelte-streamdown
 ```
 
 Requires Svelte 5.
@@ -16,8 +16,8 @@ Requires Svelte 5.
 
 ```svelte
 <script>
-  import { Streamdown } from "svelte-streamdown";
-  import "svelte-streamdown/styles.css";
+  import { Streamdown } from "@tschk/svelte-streamdown";
+  import "@tschk/svelte-streamdown/styles.css";
 
   let markdown = $state("**Hello** world");
 </script>
@@ -55,4 +55,4 @@ See [full documentation](https://github.com/undivisible/svelte-streamdown#readme
 
 ## License
 
-MPL-2.0. Apache-2.0 upstream license retained.
+ISC. Apache-2.0 upstream license (Vercel Streamdown) retained in `LICENSE-APACHE`.

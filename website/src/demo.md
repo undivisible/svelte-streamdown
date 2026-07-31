@@ -22,8 +22,8 @@ Streamdown processes markdown as it arrives, token by token. The `remend` librar
 
 ```svelte
 <script>
-  import { Streamdown } from "svelte-streamdown";
-  import "svelte-streamdown/styles.css";
+  import { Streamdown } from "@tschk/svelte-streamdown";
+  import "@tschk/svelte-streamdown/styles.css";
 
   let markdown = $state("");
 </script>
@@ -65,7 +65,7 @@ graph TD
 | Security | rehype-harden | none | rehype-harden |
 | License | MPL-2.0 | MIT | Apache-2.0 |
 
-Install: `npm install github:undivisible/svelte-streamdown`
+Install: `npm install @tschk/svelte-streamdown`
 
 ---
 

@@ -19,7 +19,7 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "svelte": "^5.51.0",
-    "svelte-streamdown": "workspace:*"
+    "@tschk/svelte-streamdown": "workspace:*"
   },
   "devDependencies": {
     "@unocss/astro": "^66.7.2",
